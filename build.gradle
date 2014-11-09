@@ -1,0 +1,77 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = '1.7'
+
+defaultTasks('clean', 'test')
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile('org.javafunk.funk:funk:0.1.22') {
+        exclude module: 'guava'
+    }
+
+    compile 'org.projectlombok:lombok:1.12.6'
+    compile 'com.google.guava:guava:17.0'
+    compile 'org.apache.commons:commons-lang3:3.2.1'
+
+    compile 'org.yaml:snakeyaml:1.14'
+
+    compile 'org.hamcrest:hamcrest-all:1.3'
+    compile 'org.javafunk.matchbox:matchbox:0.1.4'
+    compile 'org.testng:testng:6.8.7'
+    compile 'junit:junit-dep:4.11'
+    compile 'org.mockito:mockito-core:1.9.5'
+}
+
+project.tasks.withType(JavaCompile) {
+    options.deprecation = true
+    options.compilerArgs = ['-Xlint:none', '-Xlint:unchecked']
+    options.fork(memoryMaximumSize: '1024m')
+}
+
+project.tasks.withType(Test) {
+    minHeapSize = "2G"
+    maxHeapSize = "2G"
+
+    useTestNG {
+        useDefaultListeners = true
+    }
+
+    testLogging {
+        events 'failed', 'skipped'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.1'
+}
+
+idea {
+    project {
+        ipr {
+            withXml {
+                def ideaProject = it.asNode()
+
+                // Automatically set up Git support
+                ideaProject.append(node().component(name: 'VcsDirectoryMappings') {
+                    mapping(directory: '$PROJECT_DIR$', vcs: 'Git')
+                })
+
+                // Turn on annotation processing
+                ideaProject.component.find { it.@name == 'CompilerConfiguration' }['annotationProcessing'][0].replaceNode {
+                    annotationProcessing {
+                        profile(default: true, name: 'Default', useClasspath: 'true', enabled: true)
+                    }
+                }
+            }
+        }
+    }
+}
+
+def node() {
+    new NodeBuilder()
+}
