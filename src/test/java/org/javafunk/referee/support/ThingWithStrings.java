@@ -7,7 +7,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.Wither;
 
 @Value
-@AllArgsConstructor
 public class ThingWithStrings {
     String one;
     String two;
@@ -15,6 +14,12 @@ public class ThingWithStrings {
 
     @SuppressWarnings("unused") public ThingWithStrings() {
         this(null, null, null);
+    }
+
+    public ThingWithStrings(String one, String two, String three) {
+        this.one = one;
+        this.two = two;
+        this.three = three;
     }
 
     @Wither
