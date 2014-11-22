@@ -24,7 +24,7 @@ public class IntegrationTest {
                 "Three: The third string");
 
         // When
-        ThingWithStrings result = new PopulationStrategy().buildEngineFor(ThingWithStrings.class)
+        ThingWithStrings result = new PopulationEngineBuilder().forType(ThingWithStrings.class)
                 .process(definition);
 
         // Then
@@ -43,7 +43,7 @@ public class IntegrationTest {
                 "A Boolean: true");
 
         // When
-        ThingWithMixedPrimitiveTypes result = new PopulationStrategy().buildEngineFor(ThingWithMixedPrimitiveTypes.class)
+        ThingWithMixedPrimitiveTypes result = new PopulationEngineBuilder().forType(ThingWithMixedPrimitiveTypes.class)
                 .process(definition);
 
         // Then
@@ -62,7 +62,7 @@ public class IntegrationTest {
                 "A Long: 12345678");
 
         // When
-        ThingWithTypesNeedingCoercion result = new PopulationStrategy().buildEngineFor(ThingWithTypesNeedingCoercion.class)
+        ThingWithTypesNeedingCoercion result = new PopulationEngineBuilder().forType(ThingWithTypesNeedingCoercion.class)
                 .process(definition);
 
         // Then
@@ -81,7 +81,7 @@ public class IntegrationTest {
         ThingWithStrings builtResult = new ThingWithStrings.Builder().build();
 
         // When
-        ThingWithStrings result = new PopulationStrategy().buildEngineFor(ThingWithStrings.class)
+        ThingWithStrings result = new PopulationEngineBuilder().forType(ThingWithStrings.class)
                 .process(definition);
 
         // Then

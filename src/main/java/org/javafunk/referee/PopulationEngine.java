@@ -28,7 +28,7 @@ public class PopulationEngine<T> {
     // Need to initialise PopulationMechanism for parent target type
     // Need to apply an attribute value using the PopulationMechanism
     // Need to retrieve result from PopulationMechanism
-    // Is there a chain of PopulationMechanisms that get tried in order
+    // Is there a chain of PopulationMechanisms that get tried in order?
 
     // AttributeApplicator
 

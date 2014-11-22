@@ -6,20 +6,20 @@ import org.testng.annotations.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class PopulationStrategyTest {
+public class PopulationEngineBuilderTest {
     @Test
     public void constructsAnEngineUsingTheStrategyForTheSuppliedClass() throws Exception {
         // Given
         Class<ThingWithStrings> target = ThingWithStrings.class;
-        PopulationStrategy populationStrategy = new PopulationStrategy();
+        PopulationEngineBuilder populationEngineBuilder = new PopulationEngineBuilder();
 
         // When
-        PopulationEngine<ThingWithStrings> engine = populationStrategy.buildEngineFor(target);
+        PopulationEngine<ThingWithStrings> engine = populationEngineBuilder.forType(target);
 
         // Then
         assertThat(engine, is(new PopulationEngine<>(
                 target,
-                populationStrategy.getCoercionEngine(),
-                populationStrategy.getPopulationMechanismFactory())));
+                populationEngineBuilder.getCoercionEngine(),
+                populationEngineBuilder.getPopulationMechanismFactory())));
     }
 }

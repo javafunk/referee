@@ -41,7 +41,7 @@ public class BuilderPopulationMechanismTest {
 
         PopulationMechanism<ThingWithStrings> mechanism = new BuilderPopulationMechanism<>(
                 ThingWithStrings.class,
-                new FunctionBasedCoercionEngine(coercionFunctions));
+                FunctionBasedCoercionEngine.withCoercions(coercionFunctions));
 
         // When
         PopulationMechanism<ThingWithStrings> updatedMechanism = mechanism.apply(attributeName, attributeValue);

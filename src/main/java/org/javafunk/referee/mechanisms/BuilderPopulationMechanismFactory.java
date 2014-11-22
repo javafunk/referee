@@ -7,7 +7,6 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.javafunk.referee.PopulationMechanism;
 import org.javafunk.referee.PopulationMechanismFactory;
-import org.javafunk.referee.PopulationStrategy;
 import org.javafunk.referee.conversion.CoercionEngine;
 
 @ToString
