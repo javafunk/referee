@@ -1,4 +1,4 @@
-package org.javafunk.referee.support;
+package org.javafunk.referee.testclasses;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -7,16 +7,16 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.Wither;
 
 @Value
-public class ThingWithStrings {
+public class ThingWithBuilder {
     String one;
     String two;
     String three;
 
-    @SuppressWarnings("unused") public ThingWithStrings() {
+    @SuppressWarnings("unused") public ThingWithBuilder() {
         this(null, null, null);
     }
 
-    public ThingWithStrings(String one, String two, String three) {
+    public ThingWithBuilder(String one, String two, String three) {
         this.one = one;
         this.two = two;
         this.three = three;
@@ -34,8 +34,8 @@ public class ThingWithStrings {
             this("First", "Second", "Third");
         }
 
-        public ThingWithStrings build() {
-            return new ThingWithStrings(one, two, three);
+        public ThingWithBuilder build() {
+            return new ThingWithBuilder(one, two, three);
         }
     }
 }

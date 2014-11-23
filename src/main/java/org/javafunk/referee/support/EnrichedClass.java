@@ -8,6 +8,7 @@ import org.javafunk.funk.functors.functions.UnaryFunction;
 import org.javafunk.funk.monads.Option;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 import static org.javafunk.funk.Literals.iterableFrom;
@@ -48,10 +49,23 @@ public class EnrichedClass<T> {
                 .map(toEnrichedClass());
     }
 
+    public Option<EnrichedField> findFieldWithName(String fieldName) {
+        return Eagerly.firstMatching(iterableFrom(underlyingClass.getDeclaredFields()), Fields.havingName(fieldName))
+                .map(toEnrichedField());
+    }
+
     public EnrichedMethods findMethodsWithName(String methodName) {
         return new EnrichedMethods(setFrom(Lazily.map(Lazily.filter(
                 iterableFrom(underlyingClass.getDeclaredMethods()),
                 Methods.havingName(methodName)), toEnrichedMethod())));
+    }
+
+    private static UnaryFunction<Field, EnrichedField> toEnrichedField() {
+        return new UnaryFunction<Field, EnrichedField>() {
+            @Override public EnrichedField call(Field field) {
+                return new EnrichedField(field);
+            }
+        };
     }
 
     private static UnaryFunction<Class<?>, EnrichedClass<?>> toEnrichedClass() {

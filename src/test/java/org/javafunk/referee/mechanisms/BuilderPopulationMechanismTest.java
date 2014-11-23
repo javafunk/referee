@@ -1,17 +1,12 @@
 package org.javafunk.referee.mechanisms;
 
 import org.javafunk.funk.Literals;
-import org.javafunk.funk.Mappers;
-import org.javafunk.funk.UnaryFunctions;
 import org.javafunk.funk.functors.functions.UnaryFunction;
-import org.javafunk.referee.PopulationMechanism;
 import org.javafunk.referee.conversion.CoercionKey;
 import org.javafunk.referee.conversion.FunctionBasedCoercionEngine;
-import org.javafunk.referee.support.ThingWithStrings;
+import org.javafunk.referee.testclasses.ThingWithStrings;
 import org.testng.annotations.Test;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -19,13 +14,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.javafunk.funk.Literals.mapWith;
 import static org.javafunk.funk.UnaryFunctions.identity;
 import static org.javafunk.referee.conversion.CoercionKey.coercionKey;
-import static org.javafunk.referee.support.BigDecimals.doubleToBigDecimal;
-import static org.javafunk.referee.support.BigDecimals.integerToBigDecimal;
-import static org.javafunk.referee.support.BigDecimals.stringToBigDecimal;
-import static org.javafunk.referee.support.BigIntegers.integerToBigInteger;
-import static org.javafunk.referee.support.BigIntegers.stringToBigInteger;
-import static org.javafunk.referee.support.Longs.integerToLong;
-import static org.testng.Assert.*;
 
 public class BuilderPopulationMechanismTest {
     @Test

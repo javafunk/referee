@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.javafunk.funk.monads.Option;
-import org.javafunk.referee.PopulationMechanism;
 import org.javafunk.referee.conversion.CoercionEngine;
 import org.javafunk.referee.support.EnrichedClass;
 import org.javafunk.referee.support.EnrichedMethod;

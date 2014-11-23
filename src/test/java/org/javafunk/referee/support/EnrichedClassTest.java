@@ -40,6 +40,11 @@ public class EnrichedClassTest {
         public Integer someOtherMethod() { return null; }
     }
 
+    public static class WithRequiredField {
+        private String someField;
+        private Integer someOtherField;
+    }
+
     @Test
     public void findsNoParameterConstructorFromWrappedClassWhenPresent() throws Exception {
         // Given
@@ -73,7 +78,7 @@ public class EnrichedClassTest {
     }
 
     @Test
-    public void instantiatesTheWrappedClass() throws Exception {
+    public void instantiatesTheUnderlyingClass() throws Exception {
         // Given
         EnrichedClass<WithNoParameterConstructor> enriched =
                 new EnrichedClass<>(WithNoParameterConstructor.class);
@@ -133,5 +138,21 @@ public class EnrichedClassTest {
 
         // Then
         assertThat(actual, is(new EnrichedMethods(expected)));
+    }
+
+    @Test
+    public void findsFieldByName() throws Exception {
+        // Given
+        Class<WithRequiredField> klass = WithRequiredField.class;
+
+        EnrichedClass<WithRequiredField> enriched = new EnrichedClass<>(klass);
+
+        EnrichedField expected = new EnrichedField(klass.getDeclaredField("someField"));
+
+        // When
+        Option<EnrichedField> actual = enriched.findFieldWithName("someField");
+
+        // Then
+        assertThat(actual, hasValue(expected));
     }
 }

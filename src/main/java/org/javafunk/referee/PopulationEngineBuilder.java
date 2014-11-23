@@ -10,6 +10,9 @@ import org.javafunk.referee.conversion.CoercionEngine;
 import org.javafunk.referee.conversion.CoercionKey;
 import org.javafunk.referee.conversion.FunctionBasedCoercionEngine;
 import org.javafunk.referee.mechanisms.BuilderPopulationMechanismFactory;
+import org.javafunk.referee.mechanisms.DirectFieldPopulationMechanismFactory;
+import org.javafunk.referee.mechanisms.FirstApplicablePopulationMechanismFactory;
+import org.javafunk.referee.mechanisms.PopulationMechanismFactory;
 
 import java.util.Map;
 
@@ -29,7 +32,9 @@ public class PopulationEngineBuilder {
     PopulationEngineBuilder() {
         this.coercionFunctions = Literals.map();
         this.coercionEngine = FunctionBasedCoercionEngine.withDefaultCoercions();
-        this.populationMechanismFactory = new BuilderPopulationMechanismFactory(coercionEngine);
+        this.populationMechanismFactory = new FirstApplicablePopulationMechanismFactory(
+                new BuilderPopulationMechanismFactory(coercionEngine),
+                new DirectFieldPopulationMechanismFactory(coercionEngine));
     }
 
     public PopulationEngineBuilder withDefaultCoercions() {

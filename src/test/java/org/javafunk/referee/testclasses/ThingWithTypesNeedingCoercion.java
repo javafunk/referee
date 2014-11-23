@@ -1,4 +1,4 @@
-package org.javafunk.referee.support;
+package org.javafunk.referee.testclasses;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

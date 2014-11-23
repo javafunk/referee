@@ -1,9 +1,12 @@
 package org.javafunk.referee.support;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.javafunk.funk.functors.functions.UnaryFunction;
 
 import java.math.BigInteger;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BigIntegers {
     private static final UnaryFunction<String, BigInteger> STRING_TO_BIG_INTEGER = new UnaryFunction<String, BigInteger>() {
         @Override public BigInteger call(String input) {
@@ -15,8 +18,6 @@ public class BigIntegers {
             return new BigInteger(input.toString());
         }
     };
-
-    private BigIntegers() {}
 
     public static UnaryFunction<String, BigInteger> stringToBigInteger() { return STRING_TO_BIG_INTEGER; }
     public static UnaryFunction<Integer, BigInteger> integerToBigInteger() { return INTEGER_TO_BIG_INTEGER; }

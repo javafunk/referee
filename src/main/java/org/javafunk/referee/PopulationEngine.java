@@ -3,6 +3,8 @@ package org.javafunk.referee;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.javafunk.referee.conversion.CoercionEngine;
+import org.javafunk.referee.mechanisms.PopulationMechanism;
+import org.javafunk.referee.mechanisms.PopulationMechanismFactory;
 
 import java.lang.reflect.Field;
 import java.util.Map;

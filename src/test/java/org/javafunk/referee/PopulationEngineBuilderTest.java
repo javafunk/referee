@@ -1,6 +1,6 @@
 package org.javafunk.referee;
 
-import org.javafunk.referee.support.ThingWithStrings;
+import org.javafunk.referee.testclasses.ThingWithStrings;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;

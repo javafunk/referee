@@ -1,8 +1,9 @@
 package org.javafunk.referee;
 
-import org.javafunk.referee.support.ThingWithMixedPrimitiveTypes;
-import org.javafunk.referee.support.ThingWithStrings;
-import org.javafunk.referee.support.ThingWithTypesNeedingCoercion;
+import org.javafunk.referee.testclasses.ThingWithMixedPrimitiveTypes;
+import org.javafunk.referee.testclasses.ThingWithStrings;
+import org.javafunk.referee.testclasses.ThingWithNoBuilder;
+import org.javafunk.referee.testclasses.ThingWithTypesNeedingCoercion;
 import org.testng.annotations.Test;
 import org.yaml.snakeyaml.Yaml;
 
@@ -13,6 +14,7 @@ import java.util.Map;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.javafunk.referee.PopulationEngineBuilder.populationEngine;
 
 public class IntegrationTest {
     @Test
@@ -24,7 +26,8 @@ public class IntegrationTest {
                 "Three: The third string");
 
         // When
-        ThingWithStrings result = new PopulationEngineBuilder().forType(ThingWithStrings.class)
+        ThingWithStrings result = populationEngine()
+                .forType(ThingWithStrings.class)
                 .process(definition);
 
         // Then
@@ -43,7 +46,8 @@ public class IntegrationTest {
                 "A Boolean: true");
 
         // When
-        ThingWithMixedPrimitiveTypes result = new PopulationEngineBuilder().forType(ThingWithMixedPrimitiveTypes.class)
+        ThingWithMixedPrimitiveTypes result = populationEngine()
+                .forType(ThingWithMixedPrimitiveTypes.class)
                 .process(definition);
 
         // Then
@@ -62,7 +66,8 @@ public class IntegrationTest {
                 "A Long: 12345678");
 
         // When
-        ThingWithTypesNeedingCoercion result = new PopulationEngineBuilder().forType(ThingWithTypesNeedingCoercion.class)
+        ThingWithTypesNeedingCoercion result = populationEngine()
+                .forType(ThingWithTypesNeedingCoercion.class)
                 .process(definition);
 
         // Then
@@ -73,7 +78,7 @@ public class IntegrationTest {
     }
 
     @Test
-    public void usesBuilderDefinedDefaultsWhenNotAllAttributesAreSpecified() throws Exception {
+    public void usesInnerBuilderDefinedDefaultsWhenNotAllAttributesAreSpecified() throws Exception {
         // Given
         Map<String, Object> definition = parse(
                 "One: Different first");
@@ -81,7 +86,8 @@ public class IntegrationTest {
         ThingWithStrings builtResult = new ThingWithStrings.Builder().build();
 
         // When
-        ThingWithStrings result = new PopulationEngineBuilder().forType(ThingWithStrings.class)
+        ThingWithStrings result = populationEngine()
+                .forType(ThingWithStrings.class)
                 .process(definition);
 
         // Then
@@ -89,6 +95,23 @@ public class IntegrationTest {
                 "Different first",
                 builtResult.getTwo(),
                 builtResult.getThree())));
+    }
+
+    @Test
+    public void usesDirectFieldPopulationIfNoBuilderExists() throws Exception {
+        // Given
+        Map<String, Object> definition = parse(
+                "One: The first string\n" +
+                        "Two: The second string\n");
+
+        // When
+        ThingWithNoBuilder result = populationEngine()
+                .forType(ThingWithNoBuilder.class)
+                .process(definition);
+
+        // Then
+        assertThat(result, is(new ThingWithNoBuilder(
+                "The first string", "The second string")));
     }
 
     @SuppressWarnings("unchecked")

@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import org.javafunk.referee.PopulationMechanism;
-import org.javafunk.referee.PopulationMechanismFactory;
+import org.javafunk.funk.monads.Option;
 import org.javafunk.referee.conversion.CoercionEngine;
+import org.javafunk.referee.support.EnrichedClass;
 
 @ToString
 @EqualsAndHashCode
@@ -16,7 +16,14 @@ import org.javafunk.referee.conversion.CoercionEngine;
 public class BuilderPopulationMechanismFactory implements PopulationMechanismFactory {
     CoercionEngine coercionEngine;
 
+    @Override public <C> boolean canCreateFor(Class<C> targetType) {
+        EnrichedClass<C> enrichedClass = new EnrichedClass<>(targetType);
+        Option<EnrichedClass<?>> possibleBuilderClass = enrichedClass
+                .findInnerClassWithName("Builder");
+        return possibleBuilderClass.hasValue();
+    }
+
     @Override public <D> PopulationMechanism<D> forType(Class<D> targetType) {
-        return new BuilderPopulationMechanism<D>(targetType, coercionEngine);
+        return new BuilderPopulationMechanism<>(targetType, coercionEngine);
     }
 }
