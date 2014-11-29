@@ -4,7 +4,7 @@ import org.javafunk.funk.Literals;
 import org.javafunk.funk.functors.functions.UnaryFunction;
 import org.javafunk.referee.conversion.CoercionKey;
 import org.javafunk.referee.conversion.FunctionBasedCoercionEngine;
-import org.javafunk.referee.testclasses.ThingWithStrings;
+import org.javafunk.referee.testclasses.ThingWithBuilderAndStrings;
 import org.testng.annotations.Test;
 
 import java.util.Map;
@@ -27,12 +27,12 @@ public class BuilderPopulationMechanismTest {
                         .withKeyValuePair(coercionKey(String.class, String.class), identity())
                         .build();
 
-        PopulationMechanism<ThingWithStrings> mechanism = new BuilderPopulationMechanism<>(
-                ThingWithStrings.class,
+        PopulationMechanism<ThingWithBuilderAndStrings> mechanism = new BuilderPopulationMechanism<>(
+                ThingWithBuilderAndStrings.class,
                 FunctionBasedCoercionEngine.withCoercions(coercionFunctions));
 
         // When
-        PopulationMechanism<ThingWithStrings> updatedMechanism = mechanism.apply(attributeName, attributeValue);
+        PopulationMechanism<ThingWithBuilderAndStrings> updatedMechanism = mechanism.apply(attributeName, attributeValue);
 
         // Then
         assertThat(updatedMechanism.getResult().getOne(), is("The first value"));

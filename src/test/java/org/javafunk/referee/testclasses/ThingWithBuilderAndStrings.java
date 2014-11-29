@@ -7,16 +7,16 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.Wither;
 
 @Value
-public class ThingWithStrings {
+public class ThingWithBuilderAndStrings {
     String one;
     String two;
     String three;
 
-    @SuppressWarnings("unused") public ThingWithStrings() {
+    @SuppressWarnings("unused") public ThingWithBuilderAndStrings() {
         this(null, null, null);
     }
 
-    public ThingWithStrings(String one, String two, String three) {
+    public ThingWithBuilderAndStrings(String one, String two, String three) {
         this.one = one;
         this.two = two;
         this.three = three;
@@ -34,8 +34,8 @@ public class ThingWithStrings {
             this("First", "Second", "Third");
         }
 
-        public ThingWithStrings build() {
-            return new ThingWithStrings(one, two, three);
+        public ThingWithBuilderAndStrings build() {
+            return new ThingWithBuilderAndStrings(one, two, three);
         }
     }
 }

@@ -8,12 +8,12 @@ import lombok.experimental.Wither;
 
 @Value
 @AllArgsConstructor
-public class ThingWithMixedPrimitiveTypes {
+public class ThingWithBuilderAndMixedPrimitiveTypes {
     String aString;
     Integer anInteger;
     Boolean aBoolean;
 
-    @SuppressWarnings("unused") public ThingWithMixedPrimitiveTypes() {
+    @SuppressWarnings("unused") public ThingWithBuilderAndMixedPrimitiveTypes() {
         this(null, null, null);
     }
 
@@ -29,8 +29,8 @@ public class ThingWithMixedPrimitiveTypes {
             this("The String", 10000, false);
         }
 
-        public ThingWithMixedPrimitiveTypes build() {
-            return new ThingWithMixedPrimitiveTypes(aString, anInteger, aBoolean);
+        public ThingWithBuilderAndMixedPrimitiveTypes build() {
+            return new ThingWithBuilderAndMixedPrimitiveTypes(aString, anInteger, aBoolean);
         }
     }
 }

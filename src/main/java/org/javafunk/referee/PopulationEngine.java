@@ -21,19 +21,6 @@ public class PopulationEngine<T> {
     CoercionEngine coercionEngine;
     PopulationMechanismFactory mechanismFactory;
 
-    // Need to coerce from source type to target type when source is a single value
-    //   -> Coercions.attemptFor(value, targetType)
-    // Need to determine attribute name from extracted key
-    //   -> The needs of this may differ depending on the PopulationMechanism
-    // Need to know attribute target type, probably a method of the PopulationMechanism
-    // Would be nice to have a target definition detailing all target types and maybe strategy required to populate
-    // Need to initialise PopulationMechanism for parent target type
-    // Need to apply an attribute value using the PopulationMechanism
-    // Need to retrieve result from PopulationMechanism
-    // Is there a chain of PopulationMechanisms that get tried in order?
-
-    // AttributeApplicator
-
     @SuppressWarnings("unchecked")
     public T process(Map<String, Object> definition) {
         PopulationMechanism<T> populationMechanism = mechanismFactory.forType(klass);
@@ -54,22 +41,5 @@ public class PopulationEngine<T> {
         String attributeName = firstLetter.toLowerCase() + joined.substring(1);
 
         return attributeName;
-    }
-
-    private void applyAttributeValue(T instance, Field field, Object fieldValue) {
-        try {
-            field.setAccessible(true);
-            field.set(instance, fieldValue);
-        } catch (IllegalAccessException exception) {
-            throw new RuntimeException(exception);
-        }
-    }
-
-    private Field fieldWithName(String fieldName) {
-        try {
-            return klass.getDeclaredField(fieldName);
-        } catch (NoSuchFieldException exception) {
-            throw new RuntimeException(exception);
-        }
     }
 }

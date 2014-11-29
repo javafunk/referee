@@ -1,6 +1,6 @@
 package org.javafunk.referee;
 
-import org.javafunk.referee.testclasses.ThingWithStrings;
+import org.javafunk.referee.testclasses.ThingWithBuilderAndStrings;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -10,11 +10,11 @@ public class PopulationEngineBuilderTest {
     @Test
     public void constructsAnEngineUsingTheStrategyForTheSuppliedClass() throws Exception {
         // Given
-        Class<ThingWithStrings> target = ThingWithStrings.class;
+        Class<ThingWithBuilderAndStrings> target = ThingWithBuilderAndStrings.class;
         PopulationEngineBuilder populationEngineBuilder = new PopulationEngineBuilder();
 
         // When
-        PopulationEngine<ThingWithStrings> engine = populationEngineBuilder.forType(target);
+        PopulationEngine<ThingWithBuilderAndStrings> engine = populationEngineBuilder.forType(target);
 
         // Then
         assertThat(engine, is(new PopulationEngine<>(

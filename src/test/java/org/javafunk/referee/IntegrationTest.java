@@ -1,9 +1,9 @@
 package org.javafunk.referee;
 
-import org.javafunk.referee.testclasses.ThingWithMixedPrimitiveTypes;
-import org.javafunk.referee.testclasses.ThingWithStrings;
+import org.javafunk.referee.testclasses.ThingWithBuilderAndMixedPrimitiveTypes;
+import org.javafunk.referee.testclasses.ThingWithBuilderAndStrings;
 import org.javafunk.referee.testclasses.ThingWithNoBuilder;
-import org.javafunk.referee.testclasses.ThingWithTypesNeedingCoercion;
+import org.javafunk.referee.testclasses.ThingWithBuilderAndTypesNeedingCoercion;
 import org.testng.annotations.Test;
 import org.yaml.snakeyaml.Yaml;
 
@@ -26,12 +26,12 @@ public class IntegrationTest {
                 "Three: The third string");
 
         // When
-        ThingWithStrings result = populationEngine()
-                .forType(ThingWithStrings.class)
+        ThingWithBuilderAndStrings result = populationEngine()
+                .forType(ThingWithBuilderAndStrings.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithStrings(
+        assertThat(result, is(new ThingWithBuilderAndStrings(
                 "The first string",
                 "The second string",
                 "The third string")));
@@ -46,12 +46,12 @@ public class IntegrationTest {
                 "A Boolean: true");
 
         // When
-        ThingWithMixedPrimitiveTypes result = populationEngine()
-                .forType(ThingWithMixedPrimitiveTypes.class)
+        ThingWithBuilderAndMixedPrimitiveTypes result = populationEngine()
+                .forType(ThingWithBuilderAndMixedPrimitiveTypes.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithMixedPrimitiveTypes(
+        assertThat(result, is(new ThingWithBuilderAndMixedPrimitiveTypes(
                 "Some sort of string",
                 100,
                 true)));
@@ -66,12 +66,12 @@ public class IntegrationTest {
                 "A Long: 12345678");
 
         // When
-        ThingWithTypesNeedingCoercion result = populationEngine()
-                .forType(ThingWithTypesNeedingCoercion.class)
+        ThingWithBuilderAndTypesNeedingCoercion result = populationEngine()
+                .forType(ThingWithBuilderAndTypesNeedingCoercion.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithTypesNeedingCoercion(
+        assertThat(result, is(new ThingWithBuilderAndTypesNeedingCoercion(
                 new BigDecimal("100.56"),
                 new BigInteger("1024"),
                 12345678L)));
@@ -83,15 +83,15 @@ public class IntegrationTest {
         Map<String, Object> definition = parse(
                 "One: Different first");
 
-        ThingWithStrings builtResult = new ThingWithStrings.Builder().build();
+        ThingWithBuilderAndStrings builtResult = new ThingWithBuilderAndStrings.Builder().build();
 
         // When
-        ThingWithStrings result = populationEngine()
-                .forType(ThingWithStrings.class)
+        ThingWithBuilderAndStrings result = populationEngine()
+                .forType(ThingWithBuilderAndStrings.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithStrings(
+        assertThat(result, is(new ThingWithBuilderAndStrings(
                 "Different first",
                 builtResult.getTwo(),
                 builtResult.getThree())));

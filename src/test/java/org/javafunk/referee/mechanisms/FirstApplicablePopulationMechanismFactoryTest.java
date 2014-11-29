@@ -1,6 +1,6 @@
 package org.javafunk.referee.mechanisms;
 
-import org.javafunk.referee.testclasses.ThingWithStrings;
+import org.javafunk.referee.testclasses.ThingWithBuilderAndStrings;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -14,14 +14,14 @@ public class FirstApplicablePopulationMechanismFactoryTest {
     @SuppressWarnings("unchecked")
     public void returnsInstanceOfFirstPopulationMechanismThatCanPopulateTargetType() throws Exception {
         // Given
-        Class<ThingWithStrings> targetType = ThingWithStrings.class;
+        Class<ThingWithBuilderAndStrings> targetType = ThingWithBuilderAndStrings.class;
 
         PopulationMechanismFactory first = mock(PopulationMechanismFactory.class);
         PopulationMechanismFactory second = mock(PopulationMechanismFactory.class);
         PopulationMechanismFactory third = mock(PopulationMechanismFactory.class);
 
-        PopulationMechanism<ThingWithStrings> expected =
-                (PopulationMechanism<ThingWithStrings>) mock(PopulationMechanism.class);
+        PopulationMechanism<ThingWithBuilderAndStrings> expected =
+                (PopulationMechanism<ThingWithBuilderAndStrings>) mock(PopulationMechanism.class);
 
         given(first.canCreateFor(targetType)).willReturn(false);
         given(second.canCreateFor(targetType)).willReturn(true);
@@ -33,7 +33,7 @@ public class FirstApplicablePopulationMechanismFactoryTest {
                 new FirstApplicablePopulationMechanismFactory(iterableWith(first, second, third));
 
         // When
-        PopulationMechanism<ThingWithStrings> actual = factory.forType(ThingWithStrings.class);
+        PopulationMechanism<ThingWithBuilderAndStrings> actual = factory.forType(ThingWithBuilderAndStrings.class);
 
         // Then
         assertThat(actual, is(expected));

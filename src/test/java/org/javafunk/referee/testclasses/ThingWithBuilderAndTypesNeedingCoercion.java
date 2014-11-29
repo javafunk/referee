@@ -11,12 +11,12 @@ import java.math.BigInteger;
 
 @Value
 @AllArgsConstructor
-public class ThingWithTypesNeedingCoercion {
+public class ThingWithBuilderAndTypesNeedingCoercion {
     BigDecimal aBigDecimal;
     BigInteger aBigInteger;
     Long aLong;
 
-    @SuppressWarnings("unused") public ThingWithTypesNeedingCoercion() {
+    @SuppressWarnings("unused") public ThingWithBuilderAndTypesNeedingCoercion() {
         this(null, null, null);
     }
 
@@ -32,8 +32,8 @@ public class ThingWithTypesNeedingCoercion {
             this(new BigDecimal("1000.50"), new BigInteger("1000000000"), 12345L);
         }
 
-        public ThingWithTypesNeedingCoercion build() {
-            return new ThingWithTypesNeedingCoercion(aBigDecimal, aBigInteger, aLong);
+        public ThingWithBuilderAndTypesNeedingCoercion build() {
+            return new ThingWithBuilderAndTypesNeedingCoercion(aBigDecimal, aBigInteger, aLong);
         }
     }
 }
