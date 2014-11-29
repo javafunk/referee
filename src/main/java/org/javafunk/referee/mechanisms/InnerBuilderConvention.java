@@ -5,6 +5,7 @@ import org.javafunk.funk.functors.functions.UnaryFunction;
 import org.javafunk.funk.monads.Option;
 import org.javafunk.referee.support.EnrichedClass;
 import org.javafunk.referee.support.EnrichedMethod;
+import org.javafunk.referee.support.EnrichedMethods;
 
 import static org.javafunk.funk.Eagerly.first;
 import static org.javafunk.funk.Literals.iterableFrom;
@@ -22,13 +23,24 @@ public class InnerBuilderConvention implements BuilderConvention {
         this.builderClass = possibleBuilderClass.getOrThrow(new RuntimeException());
     }
 
-    @Override public Option<EnrichedMethod> witherFor(String attributeName) {
-        return builderClass.findMethodsWithName(witherNameFrom(attributeName)).withOneParameter();
+    @Override public Boolean isEnumerable(String attributeName) {
+        return singleParameterWitherFor(attributeName)
+                .map(toFirstParameterType())
+                .map(toIsEnumerable())
+                .getOrElse(false);
     }
 
-    @Override public Option<EnrichedClass<?>> typeFor(String attributeName) {
+    // TODO: Handle the case where there are many variadic methods for the attribute
+    @Override public Option<EnrichedMethod> witherFor(String attributeName) {
+        if (isEnumerable(attributeName)) {
+            return variadicParameterWitherFor(attributeName);
+        }
+        return singleParameterWitherFor(attributeName);
+    }
+
+    @Override public Option<EnrichedClass<?>> typeOf(String attributeName) {
         return witherFor(attributeName)
-                .map(toParameterType())
+                .map(toFirstParameterType())
                 .map(toEnrichedClass());
     }
 
@@ -42,16 +54,40 @@ public class InnerBuilderConvention implements BuilderConvention {
         return builderClass.instantiate();
     }
 
+    // TODO: Handle the case where there are many one parameter methods for the attribute
+    private Option<EnrichedMethod> singleParameterWitherFor(String attributeName) {
+        return allWithersFor(attributeName)
+                .withOneParameter();
+    }
+
+    private Option<EnrichedMethod> variadicParameterWitherFor(String attributeName) {
+        return first(allWithersFor(attributeName)
+                .withVariadicParameters()
+                .all());
+    }
+
+    private EnrichedMethods allWithersFor(String attributeName) {
+        return builderClass.findMethodsWithName(witherNameFrom(attributeName));
+    }
+
     private static String witherNameFrom(String attributeName) {
         return "with" +
                 attributeName.substring(0, 1).toUpperCase() +
                 attributeName.substring(1);
     }
 
-    private static UnaryFunction<EnrichedMethod, Class<?>> toParameterType() {
+    private static UnaryFunction<EnrichedMethod, Class<?>> toFirstParameterType() {
         return new UnaryFunction<EnrichedMethod, Class<?>>() {
             @Override public Class<?> call(EnrichedMethod method) {
                 return first(iterableFrom(method.getParameterTypes())).get();
+            }
+        };
+    }
+
+    private static UnaryFunction<Class<?>, Boolean> toIsEnumerable() {
+        return new UnaryFunction<Class<?>, Boolean>() {
+            @Override public Boolean call(Class<?> klass) {
+                return klass.isAssignableFrom(Iterable.class);
             }
         };
     }

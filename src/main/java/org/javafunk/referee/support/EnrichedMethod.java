@@ -39,6 +39,10 @@ public class EnrichedMethod {
         return underlyingMethod.getParameterTypes().length == arity;
     }
 
+    public boolean isVariadic() {
+        return underlyingMethod.isVarArgs();
+    }
+
     public Iterable<Class<?>> getParameterTypes() {
         return iterableFrom(underlyingMethod.getParameterTypes());
     }

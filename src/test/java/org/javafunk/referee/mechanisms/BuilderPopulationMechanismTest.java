@@ -45,12 +45,11 @@ public class BuilderPopulationMechanismTest {
     public void appliesIterableAttributeUsingVarArgsWitherOnInnerBuilderClass() throws Exception {
         // Given
         String attributeName = "strings";
-        Iterable<String> attributeValue = listBuilderWith("First", "Second").build(ArrayList.class);
+        Iterable<String> attributeValue = listWith("First", "Second");
 
         Map<CoercionKey, UnaryFunction<?, ?>> coercionFunctions =
                 Literals.<CoercionKey, UnaryFunction<? extends Object, ? extends Object>>mapBuilder()
                         .withKeyValuePair(coercionKey(String.class, String.class), identity())
-                        .withKeyValuePair(coercionKey(ArrayList.class, Iterable.class), identity())
                         .build();
 
         PopulationMechanism<ThingWithBuilderAndIterableOfStrings> mechanism = new BuilderPopulationMechanism<>(

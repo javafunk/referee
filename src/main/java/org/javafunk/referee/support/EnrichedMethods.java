@@ -8,6 +8,7 @@ import org.javafunk.funk.monads.Option;
 
 import java.util.Set;
 
+import static org.javafunk.funk.Literals.setFrom;
 import static org.javafunk.referee.support.EnrichedMethod.havingParameterTypes;
 
 @Value
@@ -32,6 +33,22 @@ public class EnrichedMethods {
 
     public Option<EnrichedMethod> withOneParameter() {
         return Eagerly.firstMatching(methods, havingASingleParameter());
+    }
+
+    public EnrichedMethods withVariadicParameters() {
+        return new EnrichedMethods(setFrom(Eagerly.filter(methods, havingAVariadicParameter())));
+    }
+
+    public Set<EnrichedMethod> all() {
+        return methods;
+    }
+
+    private UnaryPredicate<EnrichedMethod> havingAVariadicParameter() {
+        return new UnaryPredicate<EnrichedMethod>() {
+            @Override public boolean evaluate(EnrichedMethod method) {
+                return method.isVariadic();
+            }
+        };
     }
 
     private UnaryPredicate<EnrichedMethod> havingASingleParameter() {

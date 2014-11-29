@@ -1,13 +1,24 @@
 package org.javafunk.referee.mechanisms;
 
-import lombok.*;
+import com.google.common.collect.Iterables;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+import org.javafunk.funk.Lazily;
+import org.javafunk.funk.datastructures.tuples.Pair;
+import org.javafunk.funk.functors.functions.UnaryFunction;
 import org.javafunk.funk.monads.Option;
 import org.javafunk.referee.conversion.CoercionEngine;
 import org.javafunk.referee.support.EnrichedClass;
 import org.javafunk.referee.support.EnrichedMethod;
 
-import static org.javafunk.funk.Literals.iterableFrom;
+import java.lang.reflect.Array;
+
+import static org.javafunk.funk.Eagerly.first;
+import static org.javafunk.funk.Lazily.rest;
+import static org.javafunk.funk.Literals.*;
 
 @ToString
 @EqualsAndHashCode
@@ -26,21 +37,23 @@ public class BuilderPopulationMechanism<B> implements PopulationMechanism<B> {
         this.coercionEngine = coercionEngine;
     }
 
-    // If attribute type is enumerable, need to iterate value and coerce each contained instance
-    // Then need to invoke wither passing first and rest
-
-    // If attribute type is not enumerable, need to directly coerce the instance
-    // Then need to invoke wither passing just that instance
-
     @Override public PopulationMechanism<B> apply(String attributeName, Object attributeValue) {
         EnrichedMethod attributeWither = builderConvention.witherFor(attributeName)
                 .getOrThrow(new RuntimeException());
-        EnrichedClass<?> attributeType = builderConvention.typeFor(attributeName)
+        EnrichedClass<?> attributeType = builderConvention.typeOf(attributeName)
                 .getOrThrow(new RuntimeException());
 
-        Object coercedAttributeValue = coercionEngine.convertTo(attributeValue, attributeType.getUnderlyingClass());
+        Iterable<Object> arguments;
+        if (builderConvention.isEnumerable(attributeName)) {
+            Iterable<Object> iterableValues = (Iterable<Object>) attributeValue;
+            Iterable<Object> coercedValues = Lazily.map(iterableValues, coercingTo(attributeType));
 
-        Object updatedBuilderInstance = applyAttributeValue(builderInstance, attributeWither, coercedAttributeValue);
+            arguments = iterableWith(first(coercedValues).get(), toArrayOf(attributeType, rest(coercedValues)));
+        } else {
+            arguments = iterableWith(coerceTo(attributeValue, attributeType));
+        }
+
+        Object updatedBuilderInstance = applyAttributeValue(builderInstance, attributeWither, arguments);
 
         return new BuilderPopulationMechanism<>(targetType, builderConvention, updatedBuilderInstance, coercionEngine);
     }
@@ -54,7 +67,27 @@ public class BuilderPopulationMechanism<B> implements PopulationMechanism<B> {
         return targetType.cast(instance);
     }
 
-    private static Object applyAttributeValue(Object builder, EnrichedMethod wither, Object fieldValue) {
-        return wither.invokeOn(builder, fieldValue);
+    private Object coerceTo(Object attributeValue, EnrichedClass<?> attributeType) {
+        return coercionEngine.convertTo(attributeValue, attributeType.getUnderlyingClass());
+    }
+
+    private UnaryFunction<Object, Object> coercingTo(final EnrichedClass<?> attributeType) {
+        return new UnaryFunction<Object, Object>() {
+            @Override public Object call(Object input) {
+                return coerceTo(input, attributeType);
+            }
+        };
+    }
+
+    private static Object applyAttributeValue(Object builder, EnrichedMethod wither, Iterable<Object> arguments) {
+        return wither.invokeOn(builder, arrayFrom(arguments, Object.class));
+    }
+
+    private static Object toArrayOf(EnrichedClass<?> attributeType, Iterable<Object> values) {
+        Object array = Array.newInstance(attributeType.getUnderlyingClass(), Iterables.size(values));
+        for (Pair<Integer, Object> element : Lazily.enumerate(values)) {
+            Array.set(array, element.getFirst(), element.getSecond());
+        }
+        return array;
     }
 }
