@@ -1,9 +1,6 @@
 package org.javafunk.referee;
 
-import org.javafunk.referee.testclasses.ThingWithBuilderAndMixedPrimitiveTypes;
-import org.javafunk.referee.testclasses.ThingWithBuilderAndStrings;
-import org.javafunk.referee.testclasses.ThingWithNoBuilder;
-import org.javafunk.referee.testclasses.ThingWithBuilderAndTypesNeedingCoercion;
+import org.javafunk.referee.testclasses.*;
 import org.testng.annotations.Test;
 import org.yaml.snakeyaml.Yaml;
 
@@ -14,6 +11,7 @@ import java.util.Map;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.javafunk.funk.Literals.iterableWith;
 import static org.javafunk.referee.PopulationEngineBuilder.populationEngine;
 
 public class IntegrationTest {
@@ -75,6 +73,24 @@ public class IntegrationTest {
                 new BigDecimal("100.56"),
                 new BigInteger("1024"),
                 12345678L)));
+    }
+
+    @Test
+    public void populatesObjectWithBuilderAndIterableOfPrimitives() throws Exception {
+        // Given
+        Map<String, Object> definition = parse(
+                "Strings:\n" +
+                "  - First\n" +
+                "  - Second");
+
+        // When
+        ThingWithBuilderAndIterableOfStrings result = populationEngine()
+                .forType(ThingWithBuilderAndIterableOfStrings.class)
+                .process(definition);
+
+        // Then
+        assertThat(result, is(new ThingWithBuilderAndIterableOfStrings(
+                iterableWith("First", "Second"))));
     }
 
     @Test

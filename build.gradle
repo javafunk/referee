@@ -14,7 +14,7 @@ dependencies {
         exclude module: 'guava'
     }
 
-    compile 'org.projectlombok:lombok:1.12.6'
+    compile 'org.projectlombok:lombok:1.14.8'
     compile 'com.google.guava:guava:17.0'
     compile 'org.apache.commons:commons-lang3:3.2.1'
 

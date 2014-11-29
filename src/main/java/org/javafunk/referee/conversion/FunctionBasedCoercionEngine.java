@@ -7,6 +7,9 @@ import org.javafunk.funk.functors.functions.UnaryFunction;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import static org.javafunk.funk.Literals.mapBuilderFromEntries;
@@ -66,6 +69,8 @@ public class FunctionBasedCoercionEngine implements CoercionEngine {
                 .withKeyValuePair(coercionKey(String.class, String.class), identity())
                 .withKeyValuePair(coercionKey(Integer.class, Integer.class), identity())
                 .withKeyValuePair(coercionKey(Boolean.class, Boolean.class), identity())
+                .withKeyValuePair(coercionKey(Iterable.class, Iterable.class), identity())
+                .withKeyValuePair(coercionKey(ArrayList.class, Iterable.class), identity())
                 .build();
     }
 

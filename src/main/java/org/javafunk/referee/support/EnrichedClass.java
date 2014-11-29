@@ -22,7 +22,7 @@ import static org.javafunk.referee.support.EnrichedMethod.toEnrichedMethod;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class EnrichedClass<T> {
-    Class<T> underlyingClass;
+    @Getter Class<T> underlyingClass;
 
     public T instantiate() {
         Constructor<T> constructor = findNoParameterConstructor()
@@ -68,7 +68,7 @@ public class EnrichedClass<T> {
         };
     }
 
-    private static UnaryFunction<Class<?>, EnrichedClass<?>> toEnrichedClass() {
+    public static UnaryFunction<Class<?>, EnrichedClass<?>> toEnrichedClass() {
         return new UnaryFunction<Class<?>, EnrichedClass<?>>() {
             @Override public EnrichedClass<?> call(Class<?> klass) {
                 return new EnrichedClass<>(klass);
