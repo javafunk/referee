@@ -1,6 +1,7 @@
 package org.javafunk.referee.mechanisms;
 
 import org.javafunk.referee.ProblemReport;
+import org.javafunk.referee.Problems;
 import org.javafunk.referee.testclasses.ThingWithBuilderAndStrings;
 import org.testng.annotations.Test;
 
@@ -24,9 +25,12 @@ public class FirstApplicablePopulationMechanismFactoryTest {
         PopulationMechanism<ThingWithBuilderAndStrings> expected =
                 (PopulationMechanism<ThingWithBuilderAndStrings>) mock(PopulationMechanism.class);
 
-        given(first.validateFor(targetType, ProblemReport.empty())).willReturn(new ProblemReport(true));
-        given(second.validateFor(targetType, ProblemReport.empty())).willReturn(new ProblemReport(false));
-        given(third.validateFor(targetType, ProblemReport.empty())).willReturn(new ProblemReport(false));
+        given(first.validateFor(targetType, ProblemReport.empty()))
+                .willReturn(ProblemReport.with(Problems.missingInnerBuilderProblem("$", targetType)));
+        given(second.validateFor(targetType, ProblemReport.empty()))
+                .willReturn(ProblemReport.empty());
+        given(third.validateFor(targetType, ProblemReport.empty()))
+                .willReturn(ProblemReport.empty());
 
         given(second.mechanismFor(targetType)).willReturn(expected);
 

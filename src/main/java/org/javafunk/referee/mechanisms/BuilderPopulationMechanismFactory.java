@@ -7,8 +7,11 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.javafunk.funk.monads.Option;
 import org.javafunk.referee.ProblemReport;
+import org.javafunk.referee.Problems;
 import org.javafunk.referee.conversion.CoercionEngine;
 import org.javafunk.referee.support.EnrichedClass;
+
+import static org.javafunk.referee.Problems.missingInnerBuilderProblem;
 
 @ToString
 @EqualsAndHashCode
@@ -21,7 +24,12 @@ public class BuilderPopulationMechanismFactory implements PopulationMechanismFac
         EnrichedClass<C> enrichedClass = new EnrichedClass<>(targetType);
         Option<EnrichedClass<?>> possibleBuilderClass = enrichedClass
                 .findInnerClassWithName("Builder");
-        return new ProblemReport(possibleBuilderClass.hasNoValue());
+
+        if (possibleBuilderClass.hasValue()) {
+            return ProblemReport.empty();
+        } else {
+            return ProblemReport.with(missingInnerBuilderProblem("$", targetType));
+        }
     }
 
     @Override public <D> PopulationMechanism<D> mechanismFor(Class<D> targetType) {

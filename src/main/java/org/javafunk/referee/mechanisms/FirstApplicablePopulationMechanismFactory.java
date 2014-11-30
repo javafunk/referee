@@ -9,6 +9,7 @@ import org.javafunk.funk.Eagerly;
 import org.javafunk.funk.functors.functions.UnaryFunction;
 import org.javafunk.funk.functors.predicates.UnaryPredicate;
 import org.javafunk.referee.ProblemReport;
+import org.javafunk.referee.Problems;
 
 import static org.javafunk.funk.Literals.iterableFrom;
 
@@ -27,7 +28,7 @@ public class FirstApplicablePopulationMechanismFactory implements PopulationMech
         if (Eagerly.firstMatching(factories, thatCanPopulate(targetType)).hasValue()) {
             return ProblemReport.empty();
         }
-        return new ProblemReport(true);
+        return ProblemReport.with(Problems.noValidMechanism("$", targetType));
     }
 
     @Override public <C> PopulationMechanism<C> mechanismFor(Class<C> targetType) {

@@ -16,7 +16,7 @@ public class DirectFieldPopulationMechanismFactory implements PopulationMechanis
     CoercionEngine coercionEngine;
 
     @Override public <C> ProblemReport validateFor(Class<C> targetType, ProblemReport problemReport) {
-        return new ProblemReport(false);
+        return ProblemReport.empty();
     }
 
     @Override public <C> PopulationMechanism<C> mechanismFor(Class<C> targetType) {

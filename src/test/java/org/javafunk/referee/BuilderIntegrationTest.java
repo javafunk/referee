@@ -15,6 +15,7 @@ import static org.hamcrest.Matchers.is;
 import static org.javafunk.funk.Literals.iterableWith;
 import static org.javafunk.referee.Parser.parse;
 import static org.javafunk.referee.PopulationEngineBuilder.populationEngine;
+import static org.javafunk.referee.Problems.missingInnerBuilderProblem;
 
 public class BuilderIntegrationTest {
     @Test
@@ -152,7 +153,8 @@ public class BuilderIntegrationTest {
                 .process(definition);
 
         // Then
-        assertThat(result.getProblemReport(), hasProblems());
+        assertThat(result.getProblemReport(),
+                is(ProblemReport.with(missingInnerBuilderProblem("$", ThingWithNoBuilder.class))));
     }
 
     @Test(enabled = false)
