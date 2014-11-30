@@ -8,6 +8,8 @@ import org.testng.annotations.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.javafunk.funk.Literals.iterableWith;
+import static org.javafunk.funk.Literals.mapOf;
+import static org.javafunk.referee.Problems.missingInnerBuilderProblem;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -25,11 +27,11 @@ public class FirstApplicablePopulationMechanismFactoryTest {
         PopulationMechanism<ThingWithBuilderAndStrings> expected =
                 (PopulationMechanism<ThingWithBuilderAndStrings>) mock(PopulationMechanism.class);
 
-        given(first.validateFor(targetType, ProblemReport.empty()))
-                .willReturn(ProblemReport.with(Problems.missingInnerBuilderProblem("$", targetType)));
-        given(second.validateFor(targetType, ProblemReport.empty()))
+        given(first.validateFor(targetType, mapOf(String.class, Object.class), ProblemReport.empty()))
+                .willReturn(ProblemReport.of(missingInnerBuilderProblem("$", targetType)));
+        given(second.validateFor(targetType, mapOf(String.class, Object.class), ProblemReport.empty()))
                 .willReturn(ProblemReport.empty());
-        given(third.validateFor(targetType, ProblemReport.empty()))
+        given(third.validateFor(targetType, mapOf(String.class, Object.class), ProblemReport.empty()))
                 .willReturn(ProblemReport.empty());
 
         given(second.mechanismFor(targetType)).willReturn(expected);

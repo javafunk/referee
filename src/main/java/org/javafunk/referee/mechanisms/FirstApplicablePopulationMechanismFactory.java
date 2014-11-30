@@ -11,7 +11,10 @@ import org.javafunk.funk.functors.predicates.UnaryPredicate;
 import org.javafunk.referee.ProblemReport;
 import org.javafunk.referee.Problems;
 
+import java.util.Map;
+
 import static org.javafunk.funk.Literals.iterableFrom;
+import static org.javafunk.funk.Literals.mapOf;
 
 @ToString
 @EqualsAndHashCode
@@ -24,11 +27,14 @@ public class FirstApplicablePopulationMechanismFactory implements PopulationMech
         this(iterableFrom(factories));
     }
 
-    @Override public <C> ProblemReport validateFor(Class<C> targetType, ProblemReport problemReport) {
+    @Override public <C> ProblemReport validateFor(
+            Class<C> targetType,
+            Map<String, Object> definition,
+            ProblemReport problemReport) {
         if (Eagerly.firstMatching(factories, thatCanPopulate(targetType)).hasValue()) {
             return ProblemReport.empty();
         }
-        return ProblemReport.with(Problems.noValidMechanism("$", targetType));
+        return ProblemReport.of(Problems.noValidMechanism("$", targetType));
     }
 
     @Override public <C> PopulationMechanism<C> mechanismFor(Class<C> targetType) {
@@ -49,7 +55,9 @@ public class FirstApplicablePopulationMechanismFactory implements PopulationMech
     private <C> UnaryPredicate<PopulationMechanismFactory> thatCanPopulate(final Class<C> targetType) {
         return new UnaryPredicate<PopulationMechanismFactory>() {
             @Override public boolean evaluate(PopulationMechanismFactory factory) {
-                return factory.validateFor(targetType, ProblemReport.empty()).hasNoProblems();
+                return factory
+                        .validateFor(targetType, mapOf(String.class, Object.class), ProblemReport.empty())
+                        .hasNoProblems();
             }
         };
     }

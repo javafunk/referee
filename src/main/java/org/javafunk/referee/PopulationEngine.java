@@ -19,7 +19,7 @@ public class PopulationEngine<T> {
     PopulationMechanismFactory mechanismFactory;
 
     public PopulationResult<T> process(Map<String, Object> definition) {
-        ProblemReport problemReport = mechanismFactory.validateFor(klass, ProblemReport.empty());
+        ProblemReport problemReport = mechanismFactory.validateFor(klass, definition, ProblemReport.empty());
 
         if (problemReport.hasProblems()) {
             return new PopulationResult<>(null, problemReport);

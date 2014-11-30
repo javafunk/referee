@@ -3,15 +3,15 @@ package org.javafunk.referee;
 import com.google.common.collect.Iterables;
 import lombok.Value;
 
+import static org.javafunk.funk.Literals.iterableBuilderFrom;
 import static org.javafunk.funk.Literals.iterableOf;
-import static org.javafunk.funk.Literals.iterableWith;
 
 @Value
 public class ProblemReport {
     Iterable<Problem> problems;
 
-    public static ProblemReport with(Problem problem) {
-        return new ProblemReport(iterableWith(problem));
+    public static ProblemReport of(Problem problem) {
+        return ProblemReport.empty().with(problem);
     }
 
     public static ProblemReport empty() {
@@ -24,5 +24,9 @@ public class ProblemReport {
 
     public boolean hasNoProblems() {
         return !hasProblems();
+    }
+
+    public ProblemReport with(Problem problem) {
+        return new ProblemReport(iterableBuilderFrom(problems).with(problem).build());
     }
 }

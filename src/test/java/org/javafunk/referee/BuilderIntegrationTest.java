@@ -16,6 +16,7 @@ import static org.javafunk.funk.Literals.iterableWith;
 import static org.javafunk.referee.Parser.parse;
 import static org.javafunk.referee.PopulationEngineBuilder.populationEngine;
 import static org.javafunk.referee.Problems.missingInnerBuilderProblem;
+import static org.javafunk.referee.Problems.missingWitherProblem;
 
 public class BuilderIntegrationTest {
     @Test
@@ -154,10 +155,11 @@ public class BuilderIntegrationTest {
 
         // Then
         assertThat(result.getProblemReport(),
-                is(ProblemReport.with(missingInnerBuilderProblem("$", ThingWithNoBuilder.class))));
+                is(ProblemReport.of(
+                        missingInnerBuilderProblem("$", ThingWithNoBuilder.class))));
     }
 
-    @Test(enabled = false)
+    @Test
     public void reportsProblemWhenNoWitherFoundForAttribute() throws Exception {
         // Given
         Map<String, Object> definition = parse(
@@ -170,22 +172,8 @@ public class BuilderIntegrationTest {
                 .process(definition);
 
         // Then
-        assertThat(result.getProblemReport(), hasProblems());
-    }
-
-    private static Matcher<ProblemReport> hasProblems() {
-        return new TypeSafeDiagnosingMatcher<ProblemReport>() {
-            @Override protected boolean matchesSafely(ProblemReport problemReport, Description mismatchDescription) {
-                if (!problemReport.hasProblems()) {
-                    mismatchDescription.appendText("got problem report containing no problems");
-                    return false;
-                }
-                return true;
-            }
-
-            @Override public void describeTo(Description description) {
-                description.appendText("problem report to have problems");
-            }
-        };
+        assertThat(result.getProblemReport(),
+                is(ProblemReport.of(
+                        missingWitherProblem("$.noWither", ThingWithBuilderAndMissingWither.Builder.class))));
     }
 }
