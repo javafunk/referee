@@ -94,6 +94,24 @@ public class IntegrationTest {
     }
 
     @Test
+    public void populatesObjectWithBuilderAndIterableOfTypeNeedingCoercion() throws Exception {
+        // Given
+        Map<String, Object> definition = parse(
+                "Longs:\n" +
+                        "  - 1\n" +
+                        "  - 2");
+
+        // When
+        ThingWithBuilderAndIterableOfLongs result = populationEngine()
+                .forType(ThingWithBuilderAndIterableOfLongs.class)
+                .process(definition);
+
+        // Then
+        assertThat(result, is(new ThingWithBuilderAndIterableOfLongs(
+                iterableWith(1L, 2L))));
+    }
+
+    @Test
     public void usesInnerBuilderDefinedDefaultsWhenNotAllAttributesAreSpecified() throws Exception {
         // Given
         Map<String, Object> definition = parse(

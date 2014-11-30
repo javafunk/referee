@@ -37,6 +37,12 @@ public class BuilderPopulationMechanism<B> implements PopulationMechanism<B> {
         this.coercionEngine = coercionEngine;
     }
 
+    // Maybe rather than ask questions of the convention, we get an attribute from the convention and it knows
+    // How to handle that attribute
+
+    // Also, if this can get generic enough, we could collapse the mechanism into the engine and just rely on the
+    // convention to encapsulate the differences.
+
     @Override public PopulationMechanism<B> apply(String attributeName, Object attributeValue) {
         EnrichedMethod attributeWither = builderConvention.witherFor(attributeName)
                 .getOrThrow(new RuntimeException());
@@ -45,9 +51,7 @@ public class BuilderPopulationMechanism<B> implements PopulationMechanism<B> {
 
         Iterable<Object> arguments;
         if (builderConvention.isEnumerable(attributeName)) {
-            Iterable<Object> iterableValues = (Iterable<Object>) attributeValue;
-            Iterable<Object> coercedValues = Lazily.map(iterableValues, coercingTo(attributeType));
-
+            Iterable<Object> coercedValues = coerceElementsTo(attributeType, attributeValue);
             arguments = iterableWith(first(coercedValues).get(), toArrayOf(attributeType, rest(coercedValues)));
         } else {
             arguments = iterableWith(coerceTo(attributeValue, attributeType));
@@ -66,6 +70,13 @@ public class BuilderPopulationMechanism<B> implements PopulationMechanism<B> {
 
         return targetType.cast(instance);
     }
+
+    @SuppressWarnings("unchecked")
+    private Iterable<Object> coerceElementsTo(EnrichedClass<?> attributeType, Object attributeValue) {
+        Iterable<Object> iterableValues = (Iterable<Object>) attributeValue;
+        return Lazily.map(iterableValues, coercingTo(attributeType));
+    }
+
 
     private Object coerceTo(Object attributeValue, EnrichedClass<?> attributeType) {
         return coercionEngine.convertTo(attributeValue, attributeType.getUnderlyingClass());
