@@ -2,29 +2,29 @@ package org.javafunk.referee;
 
 import org.javafunk.referee.testclasses.*;
 import org.testng.annotations.Test;
-import org.yaml.snakeyaml.Yaml;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
 
-import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.javafunk.funk.Literals.iterableWith;
+import static org.javafunk.referee.Parser.parse;
 import static org.javafunk.referee.PopulationEngineBuilder.populationEngine;
 
-public class IntegrationTest {
+public class BuilderIntegrationTest {
     @Test
     public void populatesObjectWithOnlyStringFields() throws Exception {
         // Given
         Map<String, Object> definition = parse(
                 "One: The first string\n" +
-                "Two: The second string\n" +
-                "Three: The third string");
+                        "Two: The second string\n" +
+                        "Three: The third string");
 
         // When
         ThingWithBuilderAndStrings result = populationEngine()
+                .withBuilderPopulationMechanism()
                 .forType(ThingWithBuilderAndStrings.class)
                 .process(definition);
 
@@ -40,11 +40,12 @@ public class IntegrationTest {
         // Given
         Map<String, Object> definition = parse(
                 "A String: Some sort of string\n" +
-                "An Integer: 100\n" +
-                "A Boolean: true");
+                        "An Integer: 100\n" +
+                        "A Boolean: true");
 
         // When
         ThingWithBuilderAndMixedPrimitiveTypes result = populationEngine()
+                .withBuilderPopulationMechanism()
                 .forType(ThingWithBuilderAndMixedPrimitiveTypes.class)
                 .process(definition);
 
@@ -60,11 +61,12 @@ public class IntegrationTest {
         // Given
         Map<String, Object> definition = parse(
                 "A BigDecimal: '100.56'\n" +
-                "A BigInteger: 1024\n" +
-                "A Long: 12345678");
+                        "A BigInteger: 1024\n" +
+                        "A Long: 12345678");
 
         // When
         ThingWithBuilderAndTypesNeedingCoercion result = populationEngine()
+                .withBuilderPopulationMechanism()
                 .forType(ThingWithBuilderAndTypesNeedingCoercion.class)
                 .process(definition);
 
@@ -85,6 +87,7 @@ public class IntegrationTest {
 
         // When
         ThingWithBuilderAndIterableOfStrings result = populationEngine()
+                .withBuilderPopulationMechanism()
                 .forType(ThingWithBuilderAndIterableOfStrings.class)
                 .process(definition);
 
@@ -103,6 +106,7 @@ public class IntegrationTest {
 
         // When
         ThingWithBuilderAndIterableOfLongs result = populationEngine()
+                .withBuilderPopulationMechanism()
                 .forType(ThingWithBuilderAndIterableOfLongs.class)
                 .process(definition);
 
@@ -121,6 +125,7 @@ public class IntegrationTest {
 
         // When
         ThingWithBuilderAndStrings result = populationEngine()
+                .withBuilderPopulationMechanism()
                 .forType(ThingWithBuilderAndStrings.class)
                 .process(definition);
 
@@ -129,27 +134,5 @@ public class IntegrationTest {
                 "Different first",
                 builtResult.getTwo(),
                 builtResult.getThree())));
-    }
-
-    @Test
-    public void usesDirectFieldPopulationIfNoBuilderExists() throws Exception {
-        // Given
-        Map<String, Object> definition = parse(
-                "One: The first string\n" +
-                        "Two: The second string\n");
-
-        // When
-        ThingWithNoBuilder result = populationEngine()
-                .forType(ThingWithNoBuilder.class)
-                .process(definition);
-
-        // Then
-        assertThat(result, is(new ThingWithNoBuilder(
-                "The first string", "The second string")));
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, Object> parse(String yamlString) {
-        return (Map<String, Object>) new Yaml().load(yamlString);
     }
 }

@@ -18,7 +18,8 @@ import java.lang.reflect.Array;
 
 import static org.javafunk.funk.Eagerly.first;
 import static org.javafunk.funk.Lazily.rest;
-import static org.javafunk.funk.Literals.*;
+import static org.javafunk.funk.Literals.arrayFrom;
+import static org.javafunk.funk.Literals.iterableWith;
 
 @ToString
 @EqualsAndHashCode

@@ -63,6 +63,14 @@ public class PopulationEngineBuilder {
                 .withCoercionFunctions(coercionEngine.getCoercions());
     }
 
+    public PopulationEngineBuilder withBuilderPopulationMechanism() {
+        return withPopulationMechanismFactory(new BuilderPopulationMechanismFactory(coercionEngine));
+    }
+
+    public PopulationEngineBuilder withDirectFieldPopulationMechanism() {
+        return withPopulationMechanismFactory(new DirectFieldPopulationMechanismFactory(coercionEngine));
+    }
+
     public <T> PopulationEngine<T> forType(Class<T> target) {
         return new PopulationEngine<>(target, coercionEngine, populationMechanismFactory);
     }
