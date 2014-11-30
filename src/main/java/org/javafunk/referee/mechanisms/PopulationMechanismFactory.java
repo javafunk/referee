@@ -1,6 +1,8 @@
 package org.javafunk.referee.mechanisms;
 
+import org.javafunk.referee.ProblemReport;
+
 public interface PopulationMechanismFactory {
-    <C> boolean canCreateFor(Class<C> targetType);
-    <C> PopulationMechanism<C> forType(Class<C> targetType);
+    <C> ProblemReport validateFor(Class<C> targetType, ProblemReport problemReport);
+    <C> PopulationMechanism<C> mechanismFor(Class<C> targetType);
 }

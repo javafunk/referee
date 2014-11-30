@@ -1,5 +1,6 @@
 package org.javafunk.referee.mechanisms;
 
+import org.javafunk.referee.ProblemReport;
 import org.javafunk.referee.conversion.FunctionBasedCoercionEngine;
 import org.javafunk.referee.testclasses.ThingWithBuilder;
 import org.javafunk.referee.testclasses.ThingWithNoBuilder;
@@ -18,10 +19,10 @@ public class BuilderPopulationMechanismFactoryTest {
                 FunctionBasedCoercionEngine.withDefaultCoercions());
 
         // When
-        boolean canCreate = mechanismFactory.canCreateFor(targetType);
+        ProblemReport report = mechanismFactory.validateFor(targetType, ProblemReport.empty());
 
         // Then
-        assertThat(canCreate, is(true));
+        assertThat(report.hasProblems(), is(false));
     }
 
     @Test
@@ -33,9 +34,9 @@ public class BuilderPopulationMechanismFactoryTest {
                 FunctionBasedCoercionEngine.withDefaultCoercions());
 
         // When
-        boolean canCreate = mechanismFactory.canCreateFor(targetType);
+        ProblemReport report = mechanismFactory.validateFor(targetType, ProblemReport.empty());
 
         // Then
-        assertThat(canCreate, is(false));
+        assertThat(report.hasProblems(), is(true));
     }
 }

@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 import org.javafunk.funk.Eagerly;
 import org.javafunk.funk.functors.functions.UnaryFunction;
 import org.javafunk.funk.functors.predicates.UnaryPredicate;
+import org.javafunk.referee.ProblemReport;
 
 import static org.javafunk.funk.Literals.iterableFrom;
 
@@ -22,11 +23,14 @@ public class FirstApplicablePopulationMechanismFactory implements PopulationMech
         this(iterableFrom(factories));
     }
 
-    @Override public <C> boolean canCreateFor(Class<C> targetType) {
-        return false;
+    @Override public <C> ProblemReport validateFor(Class<C> targetType, ProblemReport problemReport) {
+        if (Eagerly.firstMatching(factories, thatCanPopulate(targetType)).hasValue()) {
+            return ProblemReport.empty();
+        }
+        return new ProblemReport(true);
     }
 
-    @Override public <C> PopulationMechanism<C> forType(Class<C> targetType) {
+    @Override public <C> PopulationMechanism<C> mechanismFor(Class<C> targetType) {
         return Eagerly.firstMatching(factories, thatCanPopulate(targetType))
                 .map(toInstanceFor(targetType))
                 .getOrThrow(new RuntimeException());
@@ -36,7 +40,7 @@ public class FirstApplicablePopulationMechanismFactory implements PopulationMech
             final Class<C> targetType) {
         return new UnaryFunction<PopulationMechanismFactory, PopulationMechanism<C>>() {
             @Override public PopulationMechanism<C> call(PopulationMechanismFactory factory) {
-                return factory.forType(targetType);
+                return factory.mechanismFor(targetType);
             }
         };
     }
@@ -44,7 +48,7 @@ public class FirstApplicablePopulationMechanismFactory implements PopulationMech
     private <C> UnaryPredicate<PopulationMechanismFactory> thatCanPopulate(final Class<C> targetType) {
         return new UnaryPredicate<PopulationMechanismFactory>() {
             @Override public boolean evaluate(PopulationMechanismFactory factory) {
-                return factory.canCreateFor(targetType);
+                return factory.validateFor(targetType, ProblemReport.empty()).hasNoProblems();
             }
         };
     }

@@ -1,5 +1,8 @@
 package org.javafunk.referee;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.javafunk.referee.testclasses.*;
 import org.testng.annotations.Test;
 
@@ -23,13 +26,13 @@ public class BuilderIntegrationTest {
                         "Three: The third string");
 
         // When
-        ThingWithBuilderAndStrings result = populationEngine()
+        PopulationResult<ThingWithBuilderAndStrings> result = populationEngine()
                 .withBuilderPopulationMechanism()
                 .forType(ThingWithBuilderAndStrings.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithBuilderAndStrings(
+        assertThat(result.getInstance(), is(new ThingWithBuilderAndStrings(
                 "The first string",
                 "The second string",
                 "The third string")));
@@ -44,13 +47,13 @@ public class BuilderIntegrationTest {
                         "A Boolean: true");
 
         // When
-        ThingWithBuilderAndMixedPrimitiveTypes result = populationEngine()
+        PopulationResult<ThingWithBuilderAndMixedPrimitiveTypes> result = populationEngine()
                 .withBuilderPopulationMechanism()
                 .forType(ThingWithBuilderAndMixedPrimitiveTypes.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithBuilderAndMixedPrimitiveTypes(
+        assertThat(result.getInstance(), is(new ThingWithBuilderAndMixedPrimitiveTypes(
                 "Some sort of string",
                 100,
                 true)));
@@ -65,13 +68,13 @@ public class BuilderIntegrationTest {
                         "A Long: 12345678");
 
         // When
-        ThingWithBuilderAndTypesNeedingCoercion result = populationEngine()
+        PopulationResult<ThingWithBuilderAndTypesNeedingCoercion> result = populationEngine()
                 .withBuilderPopulationMechanism()
                 .forType(ThingWithBuilderAndTypesNeedingCoercion.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithBuilderAndTypesNeedingCoercion(
+        assertThat(result.getInstance(), is(new ThingWithBuilderAndTypesNeedingCoercion(
                 new BigDecimal("100.56"),
                 new BigInteger("1024"),
                 12345678L)));
@@ -86,13 +89,13 @@ public class BuilderIntegrationTest {
                 "  - Second");
 
         // When
-        ThingWithBuilderAndIterableOfStrings result = populationEngine()
+        PopulationResult<ThingWithBuilderAndIterableOfStrings> result = populationEngine()
                 .withBuilderPopulationMechanism()
                 .forType(ThingWithBuilderAndIterableOfStrings.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithBuilderAndIterableOfStrings(
+        assertThat(result.getInstance(), is(new ThingWithBuilderAndIterableOfStrings(
                 iterableWith("First", "Second"))));
     }
 
@@ -105,13 +108,13 @@ public class BuilderIntegrationTest {
                         "  - 2");
 
         // When
-        ThingWithBuilderAndIterableOfLongs result = populationEngine()
+        PopulationResult<ThingWithBuilderAndIterableOfLongs> result = populationEngine()
                 .withBuilderPopulationMechanism()
                 .forType(ThingWithBuilderAndIterableOfLongs.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithBuilderAndIterableOfLongs(
+        assertThat(result.getInstance(), is(new ThingWithBuilderAndIterableOfLongs(
                 iterableWith(1L, 2L))));
     }
 
@@ -124,15 +127,63 @@ public class BuilderIntegrationTest {
         ThingWithBuilderAndStrings builtResult = new ThingWithBuilderAndStrings.Builder().build();
 
         // When
-        ThingWithBuilderAndStrings result = populationEngine()
+        PopulationResult<ThingWithBuilderAndStrings> result = populationEngine()
                 .withBuilderPopulationMechanism()
                 .forType(ThingWithBuilderAndStrings.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithBuilderAndStrings(
+        assertThat(result.getInstance(), is(new ThingWithBuilderAndStrings(
                 "Different first",
                 builtResult.getTwo(),
                 builtResult.getThree())));
+    }
+
+    @Test
+    public void reportsProblemWhenNoInnerBuilderFoundForTargetType() throws Exception {
+        Map<String, Object> definition = parse(
+                "One: First\n" +
+                "Two: Second");
+
+        // When
+        PopulationResult<ThingWithNoBuilder> result = populationEngine()
+                .withBuilderPopulationMechanism()
+                .forType(ThingWithNoBuilder.class)
+                .process(definition);
+
+        // Then
+        assertThat(result.getProblemReport(), hasProblems());
+    }
+
+    @Test(enabled = false)
+    public void reportsProblemWhenNoWitherFoundForAttribute() throws Exception {
+        // Given
+        Map<String, Object> definition = parse(
+                "No Wither: Value");
+
+        // When
+        PopulationResult<ThingWithBuilderAndMissingWither> result = populationEngine()
+                .withBuilderPopulationMechanism()
+                .forType(ThingWithBuilderAndMissingWither.class)
+                .process(definition);
+
+        // Then
+        assertThat(result.getProblemReport(), hasProblems());
+    }
+
+    private static Matcher<ProblemReport> hasProblems() {
+        return new TypeSafeDiagnosingMatcher<ProblemReport>() {
+            @Override protected boolean matchesSafely(ProblemReport problemReport, Description mismatchDescription) {
+                if (!problemReport.hasProblems()) {
+                    mismatchDescription.appendText("got problem report containing no problems");
+                    return false;
+                }
+                return true;
+            }
+
+            @Override public void describeTo(Description description) {
+                description.appendText("problem report to have problems");
+            }
+        };
     }
 }

@@ -23,13 +23,13 @@ public class DirectFieldIntegrationTest {
                 "Three: The third string");
 
         // When
-        ThingWithNoBuilderAndStrings result = populationEngine()
+        PopulationResult<ThingWithNoBuilderAndStrings> result = populationEngine()
                 .withDirectFieldPopulationMechanism()
                 .forType(ThingWithNoBuilderAndStrings.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithNoBuilderAndStrings(
+        assertThat(result.getInstance(), is(new ThingWithNoBuilderAndStrings(
                 "The first string",
                 "The second string",
                 "The third string")));
@@ -44,13 +44,13 @@ public class DirectFieldIntegrationTest {
                         "A Boolean: true");
 
         // When
-        ThingWithNoBuilderAndMixedPrimitiveTypes result = populationEngine()
+        PopulationResult<ThingWithNoBuilderAndMixedPrimitiveTypes> result = populationEngine()
                 .withDirectFieldPopulationMechanism()
                 .forType(ThingWithNoBuilderAndMixedPrimitiveTypes.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithNoBuilderAndMixedPrimitiveTypes(
+        assertThat(result.getInstance(), is(new ThingWithNoBuilderAndMixedPrimitiveTypes(
                 "Some sort of string",
                 100,
                 true)));
@@ -65,13 +65,13 @@ public class DirectFieldIntegrationTest {
                         "A Long: 12345678");
 
         // When
-        ThingWithNoBuilderAndTypesNeedingCoercion result = populationEngine()
+        PopulationResult<ThingWithNoBuilderAndTypesNeedingCoercion> result = populationEngine()
                 .withDirectFieldPopulationMechanism()
                 .forType(ThingWithNoBuilderAndTypesNeedingCoercion.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithNoBuilderAndTypesNeedingCoercion(
+        assertThat(result.getInstance(), is(new ThingWithNoBuilderAndTypesNeedingCoercion(
                 new BigDecimal("100.56"),
                 new BigInteger("1024"),
                 12345678L)));
@@ -86,13 +86,13 @@ public class DirectFieldIntegrationTest {
                 "  - Second");
 
         // When
-        ThingWithNoBuilderAndIterableOfStrings result = populationEngine()
+        PopulationResult<ThingWithNoBuilderAndIterableOfStrings> result = populationEngine()
                 .withDirectFieldPopulationMechanism()
                 .forType(ThingWithNoBuilderAndIterableOfStrings.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithNoBuilderAndIterableOfStrings(
+        assertThat(result.getInstance(), is(new ThingWithNoBuilderAndIterableOfStrings(
                 iterableWith("First", "Second"))));
     }
 
@@ -105,13 +105,13 @@ public class DirectFieldIntegrationTest {
                 "  - 2");
 
         // When
-        ThingWithNoBuilderAndIterableOfLongs result = populationEngine()
+        PopulationResult<ThingWithNoBuilderAndIterableOfLongs> result = populationEngine()
                 .withDirectFieldPopulationMechanism()
                 .forType(ThingWithNoBuilderAndIterableOfLongs.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithNoBuilderAndIterableOfLongs(
+        assertThat(result.getInstance(), is(new ThingWithNoBuilderAndIterableOfLongs(
                 iterableWith(1L, 2L))));
     }
 
@@ -123,13 +123,13 @@ public class DirectFieldIntegrationTest {
                         "Two: The second string\n");
 
         // When
-        ThingWithNoBuilder result = populationEngine()
+        PopulationResult<ThingWithNoBuilder> result = populationEngine()
                 .withDirectFieldPopulationMechanism()
                 .forType(ThingWithNoBuilder.class)
                 .process(definition);
 
         // Then
-        assertThat(result, is(new ThingWithNoBuilder(
+        assertThat(result.getInstance(), is(new ThingWithNoBuilder(
                 "The first string", "The second string")));
     }
 }

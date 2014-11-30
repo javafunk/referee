@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+import org.javafunk.referee.ProblemReport;
 import org.javafunk.referee.conversion.CoercionEngine;
 
 @ToString
@@ -14,11 +15,11 @@ import org.javafunk.referee.conversion.CoercionEngine;
 public class DirectFieldPopulationMechanismFactory implements PopulationMechanismFactory {
     CoercionEngine coercionEngine;
 
-    @Override public <C> boolean canCreateFor(Class<C> targetType) {
-        return true;
+    @Override public <C> ProblemReport validateFor(Class<C> targetType, ProblemReport problemReport) {
+        return new ProblemReport(false);
     }
 
-    @Override public <C> PopulationMechanism<C> forType(Class<C> targetType) {
+    @Override public <C> PopulationMechanism<C> mechanismFor(Class<C> targetType) {
         return new DirectFieldPopulationMechanism<>(targetType, coercionEngine);
     }
 }

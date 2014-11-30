@@ -17,9 +17,7 @@ public class PopulationEngineBuilderTest {
         PopulationEngine<ThingWithBuilderAndStrings> engine = populationEngineBuilder.forType(target);
 
         // Then
-        assertThat(engine, is(new PopulationEngine<>(
-                target,
-                populationEngineBuilder.getCoercionEngine(),
-                populationEngineBuilder.getPopulationMechanismFactory())));
+        assertThat(engine,
+                is(new PopulationEngine<>(target, populationEngineBuilder.getPopulationMechanismFactory())));
     }
 }

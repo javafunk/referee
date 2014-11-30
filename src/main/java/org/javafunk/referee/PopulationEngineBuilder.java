@@ -72,6 +72,6 @@ public class PopulationEngineBuilder {
     }
 
     public <T> PopulationEngine<T> forType(Class<T> target) {
-        return new PopulationEngine<>(target, coercionEngine, populationMechanismFactory);
+        return new PopulationEngine<>(target, populationMechanismFactory);
     }
 }

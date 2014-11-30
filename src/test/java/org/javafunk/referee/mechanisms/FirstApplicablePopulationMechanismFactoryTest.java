@@ -1,5 +1,6 @@
 package org.javafunk.referee.mechanisms;
 
+import org.javafunk.referee.ProblemReport;
 import org.javafunk.referee.testclasses.ThingWithBuilderAndStrings;
 import org.testng.annotations.Test;
 
@@ -23,17 +24,17 @@ public class FirstApplicablePopulationMechanismFactoryTest {
         PopulationMechanism<ThingWithBuilderAndStrings> expected =
                 (PopulationMechanism<ThingWithBuilderAndStrings>) mock(PopulationMechanism.class);
 
-        given(first.canCreateFor(targetType)).willReturn(false);
-        given(second.canCreateFor(targetType)).willReturn(true);
-        given(third.canCreateFor(targetType)).willReturn(true);
+        given(first.validateFor(targetType, ProblemReport.empty())).willReturn(new ProblemReport(true));
+        given(second.validateFor(targetType, ProblemReport.empty())).willReturn(new ProblemReport(false));
+        given(third.validateFor(targetType, ProblemReport.empty())).willReturn(new ProblemReport(false));
 
-        given(second.forType(targetType)).willReturn(expected);
+        given(second.mechanismFor(targetType)).willReturn(expected);
 
         PopulationMechanismFactory factory =
                 new FirstApplicablePopulationMechanismFactory(iterableWith(first, second, third));
 
         // When
-        PopulationMechanism<ThingWithBuilderAndStrings> actual = factory.forType(ThingWithBuilderAndStrings.class);
+        PopulationMechanism<ThingWithBuilderAndStrings> actual = factory.mechanismFor(ThingWithBuilderAndStrings.class);
 
         // Then
         assertThat(actual, is(expected));
