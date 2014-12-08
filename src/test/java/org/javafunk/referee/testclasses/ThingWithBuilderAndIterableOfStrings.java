@@ -27,6 +27,7 @@ public class ThingWithBuilderAndIterableOfStrings {
         }
 
         @Tolerate
+        @SuppressWarnings("unused")
         public Builder withStrings(String first, String... rest) {
             return withStrings(iterableBuilderWith(first).and(rest).build());
         }

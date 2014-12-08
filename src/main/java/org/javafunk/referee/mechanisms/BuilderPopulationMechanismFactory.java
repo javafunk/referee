@@ -36,7 +36,7 @@ public class BuilderPopulationMechanismFactory implements PopulationMechanismFac
 
         if (possibleBuilderClass.hasValue()) {
             BuilderConvention convention = new InnerBuilderConvention(targetType);
-            
+
             for (Map.Entry<String, Object> attribute : definition.entrySet()) {
                 String attributeName = attributeNameFrom(attribute.getKey());
                 if (convention.witherFor(attributeName).hasNoValue()) {

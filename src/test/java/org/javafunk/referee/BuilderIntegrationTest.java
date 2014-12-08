@@ -106,8 +106,8 @@ public class BuilderIntegrationTest {
         // Given
         Map<String, Object> definition = parse(
                 "Longs:\n" +
-                        "  - 1\n" +
-                        "  - 2");
+                "  - 1\n" +
+                "  - 2");
 
         // When
         PopulationResult<ThingWithBuilderAndIterableOfLongs> result = populationEngine()

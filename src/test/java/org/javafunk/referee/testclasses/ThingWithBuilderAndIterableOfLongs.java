@@ -27,6 +27,7 @@ public class ThingWithBuilderAndIterableOfLongs {
         }
 
         @Tolerate
+        @SuppressWarnings("unused")
         public Builder withLongs(Long first, Long... rest) {
             return withLongs(iterableBuilderWith(first).and(rest).build());
         }

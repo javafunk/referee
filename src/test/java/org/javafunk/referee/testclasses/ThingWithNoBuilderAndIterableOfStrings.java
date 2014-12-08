@@ -7,6 +7,7 @@ import lombok.Value;
 public class ThingWithNoBuilderAndIterableOfStrings {
     Iterable<String> strings;
 
+    @SuppressWarnings("unused")
     public ThingWithNoBuilderAndIterableOfStrings() { this(null); }
 
     public ThingWithNoBuilderAndIterableOfStrings(Iterable<String> strings) {
