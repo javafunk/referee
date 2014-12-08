@@ -63,11 +63,11 @@ public class PopulationEngineBuilder {
                 .withCoercionFunctions(coercionEngine.getCoercions());
     }
 
-    public PopulationEngineBuilder withBuilderPopulationMechanism() {
+    public PopulationEngineBuilder usingBuilderPopulation() {
         return withPopulationMechanismFactory(new BuilderPopulationMechanismFactory(coercionEngine));
     }
 
-    public PopulationEngineBuilder withDirectFieldPopulationMechanism() {
+    public PopulationEngineBuilder usingDirectFieldPopulation() {
         return withPopulationMechanismFactory(new DirectFieldPopulationMechanismFactory(coercionEngine));
     }
 

@@ -24,7 +24,7 @@ public class DirectFieldIntegrationTest {
 
         // When
         PopulationResult<ThingWithNoBuilderAndStrings> result = populationEngine()
-                .withDirectFieldPopulationMechanism()
+                .usingDirectFieldPopulation()
                 .forType(ThingWithNoBuilderAndStrings.class)
                 .process(definition);
 
@@ -45,7 +45,7 @@ public class DirectFieldIntegrationTest {
 
         // When
         PopulationResult<ThingWithNoBuilderAndMixedPrimitiveTypes> result = populationEngine()
-                .withDirectFieldPopulationMechanism()
+                .usingDirectFieldPopulation()
                 .forType(ThingWithNoBuilderAndMixedPrimitiveTypes.class)
                 .process(definition);
 
@@ -66,7 +66,7 @@ public class DirectFieldIntegrationTest {
 
         // When
         PopulationResult<ThingWithNoBuilderAndTypesNeedingCoercion> result = populationEngine()
-                .withDirectFieldPopulationMechanism()
+                .usingDirectFieldPopulation()
                 .forType(ThingWithNoBuilderAndTypesNeedingCoercion.class)
                 .process(definition);
 
@@ -87,7 +87,7 @@ public class DirectFieldIntegrationTest {
 
         // When
         PopulationResult<ThingWithNoBuilderAndIterableOfStrings> result = populationEngine()
-                .withDirectFieldPopulationMechanism()
+                .usingDirectFieldPopulation()
                 .forType(ThingWithNoBuilderAndIterableOfStrings.class)
                 .process(definition);
 
@@ -106,7 +106,7 @@ public class DirectFieldIntegrationTest {
 
         // When
         PopulationResult<ThingWithNoBuilderAndIterableOfLongs> result = populationEngine()
-                .withDirectFieldPopulationMechanism()
+                .usingDirectFieldPopulation()
                 .forType(ThingWithNoBuilderAndIterableOfLongs.class)
                 .process(definition);
 
@@ -124,7 +124,7 @@ public class DirectFieldIntegrationTest {
 
         // When
         PopulationResult<ThingWithNoBuilder> result = populationEngine()
-                .withDirectFieldPopulationMechanism()
+                .usingDirectFieldPopulation()
                 .forType(ThingWithNoBuilder.class)
                 .process(definition);
 

@@ -29,7 +29,7 @@ public class BuilderIntegrationTest {
 
         // When
         PopulationResult<ThingWithBuilderAndStrings> result = populationEngine()
-                .withBuilderPopulationMechanism()
+                .usingBuilderPopulation()
                 .forType(ThingWithBuilderAndStrings.class)
                 .process(definition);
 
@@ -50,7 +50,7 @@ public class BuilderIntegrationTest {
 
         // When
         PopulationResult<ThingWithBuilderAndMixedPrimitiveTypes> result = populationEngine()
-                .withBuilderPopulationMechanism()
+                .usingBuilderPopulation()
                 .forType(ThingWithBuilderAndMixedPrimitiveTypes.class)
                 .process(definition);
 
@@ -71,7 +71,7 @@ public class BuilderIntegrationTest {
 
         // When
         PopulationResult<ThingWithBuilderAndTypesNeedingCoercion> result = populationEngine()
-                .withBuilderPopulationMechanism()
+                .usingBuilderPopulation()
                 .forType(ThingWithBuilderAndTypesNeedingCoercion.class)
                 .process(definition);
 
@@ -92,7 +92,7 @@ public class BuilderIntegrationTest {
 
         // When
         PopulationResult<ThingWithBuilderAndIterableOfStrings> result = populationEngine()
-                .withBuilderPopulationMechanism()
+                .usingBuilderPopulation()
                 .forType(ThingWithBuilderAndIterableOfStrings.class)
                 .process(definition);
 
@@ -111,7 +111,7 @@ public class BuilderIntegrationTest {
 
         // When
         PopulationResult<ThingWithBuilderAndIterableOfLongs> result = populationEngine()
-                .withBuilderPopulationMechanism()
+                .usingBuilderPopulation()
                 .forType(ThingWithBuilderAndIterableOfLongs.class)
                 .process(definition);
 
@@ -130,7 +130,7 @@ public class BuilderIntegrationTest {
 
         // When
         PopulationResult<ThingWithBuilderAndStrings> result = populationEngine()
-                .withBuilderPopulationMechanism()
+                .usingBuilderPopulation()
                 .forType(ThingWithBuilderAndStrings.class)
                 .process(definition);
 
@@ -149,7 +149,7 @@ public class BuilderIntegrationTest {
 
         // When
         PopulationResult<ThingWithNoBuilder> result = populationEngine()
-                .withBuilderPopulationMechanism()
+                .usingBuilderPopulation()
                 .forType(ThingWithNoBuilder.class)
                 .process(definition);
 
@@ -167,7 +167,7 @@ public class BuilderIntegrationTest {
 
         // When
         PopulationResult<ThingWithBuilderAndMissingWither> result = populationEngine()
-                .withBuilderPopulationMechanism()
+                .usingBuilderPopulation()
                 .forType(ThingWithBuilderAndMissingWither.class)
                 .process(definition);
 
