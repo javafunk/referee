@@ -1,8 +1,5 @@
 package org.javafunk.referee;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.javafunk.referee.testclasses.*;
 import org.testng.annotations.Test;
 
@@ -118,6 +115,31 @@ public class BuilderIntegrationTest {
         // Then
         assertThat(result.getInstance(), is(new ThingWithBuilderAndIterableOfLongs(
                 iterableWith(1L, 2L))));
+    }
+
+    @Test(enabled = false)
+    public void populatesObjectRecursively() throws Exception {
+        // Given
+        Map<String, Object> definition = parse(
+                "First Thing: \n" +
+                "  One: Value 1.1\n" +
+                "  Two: Value 1.2\n" +
+                "  Three: Value 1.3\n" +
+                "Second Thing: \n" +
+                "  One: Value 2.1\n" +
+                "  Two: Value 2.2\n" +
+                "  Three: Value 2.3");
+
+        // When
+        PopulationResult<ThingWithThingsWithBuilderAndStrings> result = populationEngine()
+                .usingBuilderPopulation()
+                .forType(ThingWithThingsWithBuilderAndStrings.class)
+                .process(definition);
+
+        // Then
+        assertThat(result.getInstance(), is(new ThingWithThingsWithBuilderAndStrings(
+                new ThingWithBuilderAndStrings("Value 1.1", "Value 1.2", "Value 1.3"),
+                new ThingWithBuilderAndStrings("Value 2.1", "Value 2.2", "Value 2.3"))));
     }
 
     @Test
