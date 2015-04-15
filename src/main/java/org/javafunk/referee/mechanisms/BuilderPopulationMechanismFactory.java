@@ -53,6 +53,18 @@ public class BuilderPopulationMechanismFactory implements PopulationMechanismFac
         }
     }
 
+    @Override public <C> C populateFor(Class<C> targetType, Map<String, Object> definition) {
+        PopulationMechanism<C> populationMechanism = mechanismFor(targetType);
+
+        for (Map.Entry<String, Object> attribute : definition.entrySet()) {
+            String attributeName = attributeNameFrom(attribute.getKey());
+            Object attributeValue = attribute.getValue();
+
+            populationMechanism = populationMechanism.apply(attributeName, attributeValue);
+        }
+        return populationMechanism.getResult();
+    }
+
     @Override public <D> PopulationMechanism<D> mechanismFor(Class<D> targetType) {
         return new BuilderPopulationMechanism<>(targetType, coercionEngine);
     }

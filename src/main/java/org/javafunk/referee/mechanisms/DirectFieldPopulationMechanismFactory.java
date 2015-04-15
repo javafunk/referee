@@ -24,7 +24,27 @@ public class DirectFieldPopulationMechanismFactory implements PopulationMechanis
         return ProblemReport.empty();
     }
 
+    @Override public <C> C populateFor(Class<C> targetType, Map<String, Object> definition) {
+        PopulationMechanism<C> populationMechanism = mechanismFor(targetType);
+
+        for (Map.Entry<String, Object> attribute : definition.entrySet()) {
+            String attributeName = attributeNameFrom(attribute.getKey());
+            Object attributeValue = attribute.getValue();
+
+            populationMechanism = populationMechanism.apply(attributeName, attributeValue);
+        }
+        return populationMechanism.getResult();
+    }
+
     @Override public <C> PopulationMechanism<C> mechanismFor(Class<C> targetType) {
         return new DirectFieldPopulationMechanism<>(targetType, coercionEngine);
+    }
+
+    private String attributeNameFrom(String identifier) {
+        String joined = identifier.replace(" ", "");
+        String firstLetter = identifier.substring(0, 1);
+        String attributeName = firstLetter.toLowerCase() + joined.substring(1);
+
+        return attributeName;
     }
 }

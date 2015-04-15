@@ -24,24 +24,9 @@ public class PopulationEngine<T> {
         if (problemReport.hasProblems()) {
             return new PopulationResult<>(null, problemReport);
         } else {
-            PopulationMechanism<T> populationMechanism = mechanismFactory.mechanismFor(klass);
+            T instance = mechanismFactory.populateFor(klass, definition);
 
-            for (Map.Entry<String, Object> attribute : definition.entrySet()) {
-                String attributeName = attributeNameFrom(attribute.getKey());
-                Object attributeValue = attribute.getValue();
-
-                populationMechanism = populationMechanism.apply(attributeName, attributeValue);
-            }
-
-            return new PopulationResult<>(populationMechanism.getResult(), ProblemReport.empty());
+            return new PopulationResult<>(instance, ProblemReport.empty());
         }
-    }
-
-    private String attributeNameFrom(String identifier) {
-        String joined = identifier.replace(" ", "");
-        String firstLetter = identifier.substring(0, 1);
-        String attributeName = firstLetter.toLowerCase() + joined.substring(1);
-
-        return attributeName;
     }
 }
