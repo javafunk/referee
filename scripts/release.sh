@@ -5,6 +5,7 @@ if [[ "$DEBUG" == "true" ]]; then
 fi
 
 set -e
+set -o pipefail
 
 yum install -y gnupg
 
