@@ -6,4 +6,3 @@ repos/
 *.ipr
 *.ids
 .gradle
-gradle.properties
