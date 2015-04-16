@@ -20,4 +20,13 @@ Once this is present, execute the following commands:
 
 ```
 ./gradlew uploadArchives
+
+export REPO_ID=$(./gradlew nexusStagingList | grep "Repository ID" | cut -d ' ' -f 3 | cut -d ',' -f 1)
+
+./gradlew nexusStagingClose -PrepoId=$REPO_ID
+./gradlew nexusStagingPromote -PrepoId=orgjavafunk-1008
+
+# or maybe just
+
+./gradlew nexusStagingRelease
 ```
