@@ -117,7 +117,7 @@ public class BuilderIntegrationTest {
                 iterableWith(1L, 2L))));
     }
 
-    @Test(enabled = false)
+    @Test
     public void populatesObjectRecursively() throws Exception {
         // Given
         Map<String, Object> definition = parse(

@@ -60,7 +60,7 @@ public class BuilderPopulationMechanismFactory implements PopulationMechanismFac
             String attributeName = attributeNameFrom(attribute.getKey());
             Object attributeValue = attribute.getValue();
 
-            populationMechanism = populationMechanism.apply(attributeName, attributeValue);
+            populationMechanism = populationMechanism.apply(attributeName, attributeValue, this);
         }
         return populationMechanism.getResult();
     }

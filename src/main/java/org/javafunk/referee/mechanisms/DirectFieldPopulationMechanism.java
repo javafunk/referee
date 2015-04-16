@@ -35,6 +35,10 @@ public class DirectFieldPopulationMechanism<A> implements PopulationMechanism<A>
         return new DirectFieldPopulationMechanism<A>(targetClass, updatedInstance, coercionEngine);
     }
 
+    @Override public PopulationMechanism<A> apply(String attributeName, Object attributeValue, PopulationMechanismFactory factory) {
+        return null;
+    }
+
     @Override public A getResult() {
         return targetInstance;
     }

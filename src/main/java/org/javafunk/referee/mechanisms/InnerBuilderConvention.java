@@ -7,6 +7,7 @@ import org.javafunk.referee.support.EnrichedClass;
 import org.javafunk.referee.support.EnrichedMethod;
 import org.javafunk.referee.support.EnrichedMethods;
 
+import static java.lang.String.format;
 import static org.javafunk.funk.Eagerly.first;
 import static org.javafunk.funk.Literals.iterableFrom;
 import static org.javafunk.referee.support.EnrichedClass.toEnrichedClass;
@@ -16,11 +17,14 @@ public class InnerBuilderConvention implements BuilderConvention {
     EnrichedClass<?> builderClass;
 
     public InnerBuilderConvention(Class<?> targetClass) {
-        EnrichedClass<?> enrichedClass = new EnrichedClass<>(targetClass);
+        this(new EnrichedClass<>(targetClass));
+    }
+
+    public InnerBuilderConvention(EnrichedClass<?> enrichedClass) {
         Option<EnrichedClass<?>> possibleBuilderClass = enrichedClass
                 .findInnerClassWithName("Builder");
 
-        this.builderClass = possibleBuilderClass.getOrThrow(new RuntimeException());
+        this.builderClass = possibleBuilderClass.getOrThrow(new RuntimeException(format("No Builder on: %s", enrichedClass)));
     }
 
     @Override public Boolean isEnumerable(String attributeName) {
