@@ -14,7 +14,7 @@ gpg --import /var/snap-ci/repo/tclemson.gpg.key
 set -e
 
 ./gradlew uploadArchives \
-    -Psigning.keyID=$SIGNING_KEY_ID \
+    -Psigning.keyId=$SIGNING_KEY_ID \
     -Psigning.password=$SIGNING_PASSWORD \
     -Psigning.secretKeyRingFile=$SIGNING_SECRET_KEY_RING_FILE
 
