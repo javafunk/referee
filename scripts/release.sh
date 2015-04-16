@@ -10,10 +10,10 @@ set -o pipefail
 sudo yum install -y gnupg
 
 if ! gpg --list-keys 44CE9D82; then
-    gpg --import /var/snap-ci/repo/tclemson.gpg.key
+    gpg --import /var/go/tclemson.gpg.key
 fi
 
-cp -f /var/snap-ci/repo/gradle.properties .
+cp -f /var/go/gradle.properties .
 
 ./gradlew uploadArchives
 
