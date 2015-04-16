@@ -56,13 +56,13 @@ public class BuilderPopulationMechanism<B> implements PopulationMechanism<B> {
         EnrichedClass<?> attributeType = builderConvention.typeOf(attributeName)
                 .getOrThrow(new RuntimeException());
 
-        Iterable<Object> arguments = iterable();
+        Iterable<Object> arguments;
         if (builderConvention.isEnumerable(attributeName)) {
             Iterable<Object> coercedValues = coerceElementsTo(attributeType, attributeValue);
             arguments = iterableWith(first(coercedValues).get(), toArrayOf(attributeType, rest(coercedValues)));
         } else if (ConventionSelector.appliesTo(attributeType)) {
-            arguments = iterableWith(factory
-                    .populateFor(attributeType.getUnderlyingClass(), (Map<String, Object>) attributeValue));
+            @SuppressWarnings("unchecked") Map<String, Object> attributeValueAsMap = (Map<String, Object>) attributeValue;
+            arguments = iterableWith(factory.populateFor(attributeType.getUnderlyingClass(), attributeValueAsMap));
         } else {
             arguments = iterableWith(coerceTo(attributeValue, attributeType));
         }

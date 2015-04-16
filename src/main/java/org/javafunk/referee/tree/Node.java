@@ -22,11 +22,6 @@ public class Node<T> {
         this(label, value, Literals.<Node<T>>iterable());
     }
 
-    @SafeVarargs
-    public Node(String label, T value, Node<T> first, Node<T>... rest) {
-        this(label, value, iterableBuilderWith(first).and(rest).build());
-    }
-
     public <S extends Visitor<T>> S visitDepthFirst(final S visitor) {
         visitor.visit(this);
 

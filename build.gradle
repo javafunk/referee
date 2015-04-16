@@ -12,8 +12,21 @@ sourceCompatibility = '1.7'
 
 defaultTasks('clean', 'test')
 
+buildscript {
+    repositories {
+        maven  {
+            url "http://repo1.maven.org/maven2"
+        }
+    }
+    dependencies {
+        classpath 'com.adaptc.gradle:nexus-workflow:0.6'
+    }
+}
+
 repositories {
-    mavenCentral()
+    maven  {
+        url "http://repo1.maven.org/maven2"
+    }
 }
 
 dependencies {
