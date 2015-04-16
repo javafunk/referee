@@ -7,7 +7,7 @@ fi
 set -e
 set -o pipefail
 
-yum install -y gnupg
+sudo yum install -y gnupg
 
 gpg --import /var/snap-ci/repo/tclemson.gpg.key
 
