@@ -1,5 +1,12 @@
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'signing'
+apply plugin: 'nexus-workflow'
+
+version = '1.0.1'
+project.group = 'org.javafunk'
+archivesBaseName = "referee"
 
 sourceCompatibility = '1.7'
 
@@ -46,9 +53,99 @@ project.tasks.withType(Test) {
     }
 }
 
+signing {
+    sign configurations.archives
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Referee', 'Implementation-Version': version
+    }
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+    manifest {
+        attributes 'Implementation-Title': 'Referee', 'Implementation-Version': version
+    }
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+    manifest {
+        attributes 'Implementation-Title': 'Referee', 'Implementation-Version': version
+    }
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
+
+
+
+artifacts {
+    archives javadocJar, sourcesJar
 }
+
+uploadArchives {
+    repositories {
+        flatDir {
+            dirs 'repos'
+        }
+
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(
+                        userName: project.property("oss-releases.username"),
+                        password: project.property("oss-releases.password"))
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(
+                        userName: project.property("oss-releases.username"),
+                        password: project.property("oss-releases.password"))
+            }
+
+            pom.project {
+                name 'Referee'
+                packaging 'jar'
+                description 'Marshals between nested maps and Java object hierarchies.'
+                url 'https://github.com/javafunk/referee'
+
+                scm {
+                    connection 'scm:git:git://github.com/javafunk/referee'
+                    developerConnection 'scm:git:git://github.com/javafunk/referee/'
+                    url 'https://github.com/javafunk/referee'
+                }
+
+                licenses {
+                    license {
+                        name 'The MIT License (MIT)'
+                        url 'http://opensource.org/licenses/MIT'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'tobyclemson'
+                        name 'Toby Clemson'
+                        email 'tobyclemson@gmail.com'
+                    }
+
+                    developer {
+                        id 'rafasf'
+                        name 'Rafa Ferreira'
+                        email 'rafaelsf@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 idea {
     project {

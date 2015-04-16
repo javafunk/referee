@@ -5,3 +5,4 @@ out/
 *.ipr
 *.ids
 .gradle
+gradle.properties
