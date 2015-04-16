@@ -13,7 +13,7 @@ if ! gpg --list-keys 44CE9D82; then
     gpg --import /var/snap-ci/repo/tclemson.gpg.key
 fi
 
-cp /var/snap-ci/repo/gradle.properties .
+cp -f /var/snap-ci/repo/gradle.properties .
 
 ./gradlew uploadArchives
 
