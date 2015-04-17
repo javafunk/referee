@@ -137,8 +137,8 @@ uploadArchives {
 
                 licenses {
                     license {
-                        name 'The MIT License (MIT)'
-                        url 'http://opensource.org/licenses/MIT'
+                        name 'BSD License'
+                        url 'http://www.opensource.org/licenses/bsd-license.php'
                     }
                 }
 
