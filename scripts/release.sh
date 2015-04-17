@@ -16,9 +16,4 @@ fi
 cp -f /var/go/gradle.properties .
 
 ./gradlew uploadArchives
-
-REPO_ID=$(./gradlew nexusStagingList | grep "Repository ID" | cut -d ' ' -f 3 | cut -d ',' -f  1)
-
-./gradlew nexusStagingClose -PrepoId=$REPO_ID
-sleep 1m
-./gradlew nexusStagingPromote -PrepoId=$REPO_ID
+./gradlew nexusStagingRelease
