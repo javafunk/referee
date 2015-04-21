@@ -19,40 +19,40 @@ import static org.javafunk.funk.Literals.iterableWith;
 
 @Value
 @AllArgsConstructor
-public class Node<T> {
-    String label;
+public class Node<L, T> {
+    L label;
     T value;
-    Iterable<Node<T>> children;
+    Iterable<Node<L, T>> children;
 
-    public static <T> Node<T> node(String label) {
+    public static <L, T> Node<L, T> emptyNode(L label) {
         return new Node<>(label, null);
     }
 
-    public static <T> Node<T> node(String label, Iterable<Node<T>> children) {
-        return new Node<>(label, null, children);
-    }
-
-    public static <T> Node<T> node(String label, T value) {
+    public static <L, T> Node<L, T> leafNode(L label, T value) {
         return new Node<>(label, value);
     }
 
-    public static <T> Node<T> node(String label, T value, Iterable<Node<T>> children) {
+    public static <L, T> Node<L, T> branchNode(L label, Iterable<Node<L, T>> children) {
+        return new Node<>(label, null, children);
+    }
+
+    public static <L, T> Node<L, T> node(L label, T value, Iterable<Node<L, T>> children) {
         return new Node<>(label, value, children);
     }
 
-    public Node(String label, T value) {
-        this(label, value, Literals.<Node<T>>iterable());
+    public Node(L label, T value) {
+        this(label, value, Literals.<Node<L, T>>iterable());
     }
 
-    public <S extends Visitor<T, S>> S visit(Traversal traversal, S visitor) {
+    public <S extends Visitor<L, T, S>> S visit(Traversal traversal, S visitor) {
         return traversal.applyTo(this, visitor);
     }
 
-    public <S extends Visitor<T, S>> S visitDepthFirst(final S visitor) {
-        S updatedVisitor = visitor.visit(this);;
+    public <S extends Visitor<L, T, S>> S visitDepthFirst(final S visitor) {
+        S updatedVisitor = visitor.visit(this);
 
-        updatedVisitor = Eagerly.reduce(children, updatedVisitor, new BinaryFunction<S, Node<T>, S>() {
-            @Override public S call(S visitor, Node<T> node) {
+        updatedVisitor = Eagerly.reduce(children, updatedVisitor, new BinaryFunction<S, Node<L, T>, S>() {
+            @Override public S call(S visitor, Node<L, T> node) {
                 return node.visitDepthFirst(visitor);
             }
         });
@@ -60,16 +60,16 @@ public class Node<T> {
         return updatedVisitor;
     }
 
-    public <S extends Visitor<T, S>> S visitBreadthFirst(S visitor) {
+    public <S extends Visitor<L, T, S>> S visitBreadthFirst(S visitor) {
         S updatedVisitor = visitor;
-        final Queue<Node<T>> nodeQueue = new LinkedList<>(collectionWith(this));
+        final Queue<Node<L, T>> nodeQueue = new LinkedList<>(collectionWith(this));
 
         while (!nodeQueue.isEmpty()) {
-            Node<T> node = nodeQueue.remove();
+            Node<L, T> node = nodeQueue.remove();
             updatedVisitor = updatedVisitor.visit(node);
 
-            each(node.getChildren(), new Action<Node<T>>() {
-                @Override public void on(Node<T> child) {
+            each(node.getChildren(), new Action<Node<L, T>>() {
+                @Override public void on(Node<L, T> child) {
                     nodeQueue.add(child);
                 }
             });
@@ -78,9 +78,9 @@ public class Node<T> {
         return updatedVisitor;
     }
 
-    public <R> Node<R> mapValue(final Mapper<T, R> mapper) {
-        return new Node<>(label, mapper.map(value), map(children, new Mapper<Node<T>, Node<R>>() {
-            @Override public Node<R> map(Node<T> node) {
+    public <R> Node<L, R> mapValue(final Mapper<T, R> mapper) {
+        return new Node<>(label, mapper.map(value), map(children, new Mapper<Node<L, T>, Node<L, R>>() {
+            @Override public Node<L, R> map(Node<L, T> node) {
                 return node.mapValue(mapper);
             }
         }));
