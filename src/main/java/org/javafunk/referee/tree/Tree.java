@@ -3,7 +3,7 @@ package org.javafunk.referee.tree;
 import lombok.Value;
 import org.javafunk.funk.functors.Mapper;
 
-import static org.javafunk.referee.tree.Traversal.DepthFirst;
+import static org.javafunk.referee.tree.Traversal.DepthFirstPreOrder;
 
 @Value
 public class Tree<L, T> {
@@ -14,7 +14,7 @@ public class Tree<L, T> {
     }
 
     public <S extends Visitor<L, T, S>> S visit(S visitor) {
-        return visit(DepthFirst, visitor);
+        return rootNode.visit(visitor);
     }
 
     public <S extends Visitor<L, T, S>> S visit(Traversal traversal, S visitor) {

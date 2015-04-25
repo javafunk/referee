@@ -1,14 +1,24 @@
 package org.javafunk.referee.tree;
 
 public enum Traversal {
-    DepthFirst {
+    DepthFirstPreOrder {
         @Override public <L, T, S extends Visitor<L, T, S>> S applyTo(Node<L, T> node, S visitor) {
-            return node.visitDepthFirst(visitor);
+            return node.visitDepthFirstPreOrder(visitor);
         }
     },
-    BreadthFirst {
+    DepthFirstPostOrder {
         @Override public <L, T, S extends Visitor<L, T, S>> S applyTo(Node<L, T> node, S visitor) {
-            return node.visitBreadthFirst(visitor);
+            return node.visitDepthFirstPostOrder(visitor);
+        }
+    },
+    BreadthFirstLeftToRight {
+        @Override public <L, T, S extends Visitor<L, T, S>> S applyTo(Node<L, T> node, S visitor) {
+            return node.visitBreadthFirstLeftToRight(visitor);
+        }
+    },
+    BreadthFirstRightToLeft {
+        @Override public <L, T, S extends Visitor<L, T, S>> S applyTo(Node<L, T> node, S visitor) {
+            return node.visitBreadthFirstRightToLeft(visitor);
         }
     };
 

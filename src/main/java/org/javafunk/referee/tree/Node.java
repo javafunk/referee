@@ -11,12 +11,9 @@ import org.javafunk.funk.functors.functions.BinaryFunction;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import static org.javafunk.funk.Eagerly.each;
-import static org.javafunk.funk.Eagerly.map;
+import static org.javafunk.funk.Eagerly.*;
 import static org.javafunk.funk.Literals.collectionWith;
-import static org.javafunk.funk.Literals.iterableBuilderWith;
-import static org.javafunk.funk.Literals.iterableWith;
-import static org.javafunk.referee.tree.Traversal.DepthFirst;
+import static org.javafunk.referee.tree.Traversal.DepthFirstPreOrder;
 
 @Value
 @AllArgsConstructor
@@ -46,26 +43,40 @@ public class Node<L, T> {
     }
 
     public <S extends Visitor<L, T, S>> S visit(S visitor) {
-        return DepthFirst.applyTo(this, visitor);
+        return DepthFirstPreOrder.applyTo(this, visitor);
     }
 
     public <S extends Visitor<L, T, S>> S visit(Traversal traversal, S visitor) {
         return traversal.applyTo(this, visitor);
     }
 
-    public <S extends Visitor<L, T, S>> S visitDepthFirst(final S visitor) {
+    public <S extends Visitor<L, T, S>> S visitDepthFirstPreOrder(final S visitor) {
         S updatedVisitor = visitor.visit(this);
 
         updatedVisitor = Eagerly.reduce(children, updatedVisitor, new BinaryFunction<S, Node<L, T>, S>() {
             @Override public S call(S visitor, Node<L, T> node) {
-                return node.visitDepthFirst(visitor);
+                return node.visitDepthFirstPreOrder(visitor);
             }
         });
 
         return updatedVisitor;
     }
 
-    public <S extends Visitor<L, T, S>> S visitBreadthFirst(S visitor) {
+    public <S extends Visitor<L, T, S>> S visitDepthFirstPostOrder(S visitor) {
+        S updatedVisitor = visitor;
+
+        updatedVisitor = Eagerly.reduce(children, updatedVisitor, new BinaryFunction<S, Node<L, T>, S>() {
+            @Override public S call(S visitor, Node<L, T> node) {
+                return node.visitDepthFirstPostOrder(visitor);
+            }
+        });
+
+        updatedVisitor = updatedVisitor.visit(this);
+
+        return updatedVisitor;
+    }
+
+    public <S extends Visitor<L, T, S>> S visitBreadthFirstLeftToRight(S visitor) {
         S updatedVisitor = visitor;
         final Queue<Node<L, T>> nodeQueue = new LinkedList<>(collectionWith(this));
 
@@ -74,6 +85,24 @@ public class Node<L, T> {
             updatedVisitor = updatedVisitor.visit(node);
 
             each(node.getChildren(), new Action<Node<L, T>>() {
+                @Override public void on(Node<L, T> child) {
+                    nodeQueue.add(child);
+                }
+            });
+        }
+
+        return updatedVisitor;
+    }
+
+    public <S extends Visitor<L, T, S>> S visitBreadthFirstRightToLeft(S visitor) {
+        S updatedVisitor = visitor;
+        final Queue<Node<L, T>> nodeQueue = new LinkedList<>(collectionWith(this));
+
+        while (!nodeQueue.isEmpty()) {
+            Node<L, T> node = nodeQueue.remove();
+            updatedVisitor = updatedVisitor.visit(node);
+
+            each(reverse(node.getChildren()), new Action<Node<L, T>>() {
                 @Override public void on(Node<L, T> child) {
                     nodeQueue.add(child);
                 }
