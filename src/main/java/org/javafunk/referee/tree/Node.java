@@ -16,6 +16,7 @@ import static org.javafunk.funk.Eagerly.map;
 import static org.javafunk.funk.Literals.collectionWith;
 import static org.javafunk.funk.Literals.iterableBuilderWith;
 import static org.javafunk.funk.Literals.iterableWith;
+import static org.javafunk.referee.tree.Traversal.DepthFirst;
 
 @Value
 @AllArgsConstructor
@@ -42,6 +43,10 @@ public class Node<L, T> {
 
     public Node(L label, T value) {
         this(label, value, Literals.<Node<L, T>>iterable());
+    }
+
+    public <S extends Visitor<L, T, S>> S visit(S visitor) {
+        return DepthFirst.applyTo(this, visitor);
     }
 
     public <S extends Visitor<L, T, S>> S visit(Traversal traversal, S visitor) {
