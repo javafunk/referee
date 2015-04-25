@@ -13,6 +13,7 @@ import static org.hamcrest.Matchers.is;
 import static org.javafunk.funk.Literals.*;
 import static org.javafunk.referee.MapToTree.fromMapToTree;
 import static org.javafunk.referee.tree.Node.branchNode;
+import static org.javafunk.referee.tree.Node.leafNode;
 import static org.javafunk.referee.tree.Node.node;
 import static org.javafunk.referee.tree.Tree.tree;
 
@@ -48,6 +49,68 @@ public class MapToTreeTest {
                         Node.<Object, Object>leafNode(0, "1"),
                         Node.<Object, Object>leafNode(1, "2"),
                         Node.<Object, Object>leafNode(2, "3"))),
+                Node.<Object, Object>leafNode("second", 2))));
+
+        // When
+        Tree<Object, Object> actualTree = fromMapToTree().call(map);
+
+        // Then
+        assertThat(actualTree, is(expectedTree));
+    }
+
+    @Test
+    public void constructsTreeOfDepthTwoFromComplexIterable() {
+        // Given
+        Map<Object, Object> firstElement = mapBuilderOf(Object.class, Object.class)
+                .withKeyValuePair("first-element", 1)
+                .build();
+        Map<Object, Object> secondElement = mapBuilderOf(Object.class, Object.class)
+                .withKeyValuePair("second-element", 2)
+                .build();
+        Iterable<Object> first = Literals.<Object>iterableWith(firstElement, secondElement);
+        Map<Object, Object> map = mapBuilderOf(Object.class, Object.class)
+                .withKeyValuePairs("first", first, "second", 2)
+                .build(LinkedHashMap.class);
+
+        Tree<Object, Object> expectedTree = tree(branchNode("$", iterableWith(
+                branchNode("first", iterableWith(
+                        branchNode(0, iterableWith(Node.<Object, Object>leafNode("first-element", 1))),
+                        branchNode(1, iterableWith(Node.<Object, Object>leafNode("second-element", 2))))),
+                Node.<Object, Object>leafNode("second", 2))));
+
+        // When
+        Tree<Object, Object> actualTree = fromMapToTree().call(map);
+
+        // Then
+        assertThat(actualTree, is(expectedTree));
+    }
+
+    @Test
+    public void constructsTreeOfArbitraryDepthFromIterableOfNestedMaps() {
+        // Given
+        Map<Object, Object> firstElementMap = mapBuilderOf(Object.class, Object.class)
+                .withKeyValuePair("first-element-key", "first-value")
+                .build();
+        Map<Object, Object> secondElementMap = mapBuilderOf(Object.class, Object.class)
+                .withKeyValuePair("second-element-key", "second-value")
+                .build();
+        Map<Object, Object> firstElement = mapBuilderOf(Object.class, Object.class)
+                .withKeyValuePair("first-element", firstElementMap)
+                .build();
+        Map<Object, Object> secondElement = mapBuilderOf(Object.class, Object.class)
+                .withKeyValuePair("second-element", secondElementMap)
+                .build();
+        Iterable<Object> first = Literals.<Object>iterableWith(firstElement, secondElement);
+        Map<Object, Object> map = mapBuilderOf(Object.class, Object.class)
+                .withKeyValuePairs("first", first, "second", 2)
+                .build(LinkedHashMap.class);
+
+        Tree<Object, Object> expectedTree = tree(branchNode("$", iterableWith(
+                branchNode("first", iterableWith(
+                        branchNode(0, iterableWith(branchNode("first-element",
+                                iterableWith(Node.<Object, Object>leafNode("first-element-key", "first-value"))))),
+                        branchNode(1, iterableWith(branchNode("second-element",
+                                iterableWith(Node.<Object, Object>leafNode("second-element-key", "second-value"))))))),
                 Node.<Object, Object>leafNode("second", 2))));
 
         // When
