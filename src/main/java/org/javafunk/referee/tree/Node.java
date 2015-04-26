@@ -3,17 +3,21 @@ package org.javafunk.referee.tree;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import org.javafunk.funk.Eagerly;
+import org.javafunk.funk.Lazily;
 import org.javafunk.funk.Literals;
+import org.javafunk.funk.datastructures.tuples.Pair;
 import org.javafunk.funk.functors.Action;
-import org.javafunk.funk.functors.Mapper;
-import org.javafunk.funk.functors.functions.BinaryFunction;
+import org.javafunk.funk.functors.functions.UnaryFunction;
+import org.javafunk.funk.functors.procedures.UnaryProcedure;
+import org.javafunk.referee.tree.traversalhandlers.MapValueTraversalHandler;
+import org.javafunk.referee.tree.traversalhandlers.TwoZipTraversalHandler;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
-import static org.javafunk.funk.Eagerly.*;
 import static org.javafunk.funk.Literals.collectionWith;
 import static org.javafunk.referee.tree.Traversal.DepthFirstPreOrder;
+import static org.javafunk.referee.tree.traversalhandlers.VisitingTraversalHandler.usingVisitor;
 
 @Value
 @AllArgsConstructor
@@ -42,6 +46,88 @@ public class Node<L, T> {
         this(label, value, Literals.<Node<L, T>>iterable());
     }
 
+    public <H extends TraversalHandler<L, T>> H traverseDepthFirstPreOrder(final H traversalHandler) {
+        traversalHandler.handleSelf(this);
+
+        Eagerly.each(Lazily.enumerate(children), new UnaryProcedure<Pair<Integer, Node<L, T>>>() {
+            @Override public void execute(Pair<Integer, Node<L, T>> child) {
+                final Integer index = child.getFirst();
+                final Node<L, T> node = child.getSecond();
+
+                traversalHandler.handleChild(index, node);
+                if (traversalHandler.goDeeper()) {
+                    node.traverseDepthFirstPreOrder(traversalHandler);
+                }
+            }
+        });
+
+        return traversalHandler;
+    }
+
+    public <H extends TraversalHandler<L, T>> H traverseDepthFirstPostOrder(final H traversalHandler) {
+        Eagerly.each(Lazily.enumerate(children), new UnaryProcedure<Pair<Integer, Node<L, T>>>() {
+            @Override public void execute(Pair<Integer, Node<L, T>> child) {
+                final Integer index = child.getFirst();
+                final Node<L, T> node = child.getSecond();
+
+                if (traversalHandler.goDeeper()) {
+                    node.traverseDepthFirstPostOrder(traversalHandler);
+                }
+                traversalHandler.handleChild(index, node);
+            }
+        });
+
+        traversalHandler.handleSelf(this);
+
+        return traversalHandler;
+    }
+
+    public <H extends TraversalHandler<L, T>> H traverseBreadthFirstLeftToRight(final H traversalHandler) {
+        final Queue<Node<L, T>> nodeQueue = new LinkedList<>(collectionWith(this));
+
+        while (!nodeQueue.isEmpty()) {
+            Node<L, T> node = nodeQueue.remove();
+            traversalHandler.handleSelf(node);
+
+            Eagerly.each(Lazily.enumerate(node.getChildren()), new Action<Pair<Integer, Node<L, T>>>() {
+                @Override public void on(Pair<Integer, Node<L, T>> child) {
+                    final Integer index = child.getFirst();
+                    final Node<L, T> node = child.getSecond();
+
+                    traversalHandler.handleChild(index, node);
+                    if (traversalHandler.goDeeper()) {
+                        nodeQueue.add(node);
+                    }
+                }
+            });
+        }
+
+        return traversalHandler;
+    }
+
+    public <H extends TraversalHandler<L, T>> H traverseBreadthFirstRightToLeft(final H traversalHandler) {
+        final Queue<Node<L, T>> nodeQueue = new LinkedList<>(collectionWith(this));
+
+        while (!nodeQueue.isEmpty()) {
+            Node<L, T> node = nodeQueue.remove();
+            traversalHandler.handleSelf(node);
+
+            Eagerly.each(Eagerly.reverse(Lazily.enumerate(node.getChildren())), new Action<Pair<Integer, Node<L, T>>>() {
+                @Override public void on(Pair<Integer, Node<L, T>> child) {
+                    final Integer index = child.getFirst();
+                    final Node<L, T> node = child.getSecond();
+
+                    traversalHandler.handleChild(index, node);
+                    if (traversalHandler.goDeeper()) {
+                        nodeQueue.add(node);
+                    }
+                }
+            });
+        }
+
+        return traversalHandler;
+    }
+
     public <S extends Visitor<L, T, S>> S visit(S visitor) {
         return DepthFirstPreOrder.applyTo(this, visitor);
     }
@@ -51,72 +137,26 @@ public class Node<L, T> {
     }
 
     public <S extends Visitor<L, T, S>> S visitDepthFirstPreOrder(final S visitor) {
-        S updatedVisitor = visitor.visit(this);
-
-        updatedVisitor = Eagerly.reduce(children, updatedVisitor, new BinaryFunction<S, Node<L, T>, S>() {
-            @Override public S call(S visitor, Node<L, T> node) {
-                return node.visitDepthFirstPreOrder(visitor);
-            }
-        });
-
-        return updatedVisitor;
+        return traverseDepthFirstPreOrder(usingVisitor(visitor)).getVisitor();
     }
 
     public <S extends Visitor<L, T, S>> S visitDepthFirstPostOrder(S visitor) {
-        S updatedVisitor = visitor;
-
-        updatedVisitor = Eagerly.reduce(children, updatedVisitor, new BinaryFunction<S, Node<L, T>, S>() {
-            @Override public S call(S visitor, Node<L, T> node) {
-                return node.visitDepthFirstPostOrder(visitor);
-            }
-        });
-
-        updatedVisitor = updatedVisitor.visit(this);
-
-        return updatedVisitor;
+        return traverseDepthFirstPostOrder(usingVisitor(visitor)).getVisitor();
     }
 
     public <S extends Visitor<L, T, S>> S visitBreadthFirstLeftToRight(S visitor) {
-        S updatedVisitor = visitor;
-        final Queue<Node<L, T>> nodeQueue = new LinkedList<>(collectionWith(this));
-
-        while (!nodeQueue.isEmpty()) {
-            Node<L, T> node = nodeQueue.remove();
-            updatedVisitor = updatedVisitor.visit(node);
-
-            each(node.getChildren(), new Action<Node<L, T>>() {
-                @Override public void on(Node<L, T> child) {
-                    nodeQueue.add(child);
-                }
-            });
-        }
-
-        return updatedVisitor;
+        return traverseBreadthFirstLeftToRight(usingVisitor(visitor)).getVisitor();
     }
 
     public <S extends Visitor<L, T, S>> S visitBreadthFirstRightToLeft(S visitor) {
-        S updatedVisitor = visitor;
-        final Queue<Node<L, T>> nodeQueue = new LinkedList<>(collectionWith(this));
-
-        while (!nodeQueue.isEmpty()) {
-            Node<L, T> node = nodeQueue.remove();
-            updatedVisitor = updatedVisitor.visit(node);
-
-            each(reverse(node.getChildren()), new Action<Node<L, T>>() {
-                @Override public void on(Node<L, T> child) {
-                    nodeQueue.add(child);
-                }
-            });
-        }
-
-        return updatedVisitor;
+        return traverseBreadthFirstRightToLeft(usingVisitor(visitor)).getVisitor();
     }
 
-    public <R> Node<L, R> mapValue(final Mapper<T, R> mapper) {
-        return new Node<>(label, mapper.map(value), map(children, new Mapper<Node<L, T>, Node<L, R>>() {
-            @Override public Node<L, R> map(Node<L, T> node) {
-                return node.mapValue(mapper);
-            }
-        }));
+    public <R> Node<L, Pair<T, R>> zip(Node<L, R> other) {
+        return traverseBreadthFirstLeftToRight(TwoZipTraversalHandler.<L, T, R>usingZipWith(other)).getZipped();
+    }
+
+    public <R> Node<L, R> mapValue(final UnaryFunction<T, R> mapper) {
+        return traverseBreadthFirstLeftToRight(MapValueTraversalHandler.<L, T, R>mappingValueWith(mapper)).getMapped();
     }
 }

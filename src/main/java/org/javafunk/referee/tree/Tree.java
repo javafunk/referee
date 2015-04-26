@@ -1,6 +1,7 @@
 package org.javafunk.referee.tree;
 
 import lombok.Value;
+import org.javafunk.funk.datastructures.tuples.Pair;
 import org.javafunk.funk.functors.Mapper;
 
 import static org.javafunk.referee.tree.Traversal.DepthFirstPreOrder;
@@ -23,5 +24,9 @@ public class Tree<L, T> {
 
     public <R> Tree<L, R> mapValue(Mapper<T, R> mapper) {
         return new Tree<>(rootNode.mapValue(mapper));
+    }
+
+    public <R> Tree<L, Pair<T, R>> zip(Tree<L, R> secondTree) {
+        return new Tree<>(rootNode.zip(secondTree.getRootNode()));
     }
 }

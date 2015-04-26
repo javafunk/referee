@@ -1,6 +1,7 @@
 package org.javafunk.referee.tree;
 
 import lombok.Getter;
+import org.javafunk.funk.datastructures.tuples.Pair;
 import org.javafunk.funk.functors.Mapper;
 import org.testng.annotations.Test;
 
@@ -10,6 +11,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.javafunk.funk.Literals.iterableWith;
+import static org.javafunk.funk.Literals.tuple;
 import static org.javafunk.matchbox.Matchers.hasOnlyItemsInOrder;
 import static org.javafunk.referee.tree.Node.node;
 import static org.javafunk.referee.tree.Traversal.*;
@@ -142,6 +144,48 @@ public class TreeTest {
 
         // Then
         assertThat(actual, is(expected));
+    }
+    
+    @Test
+    public void zipsTwoTreesTogetherUsingLabelEquality() {
+        // Given
+        Node<String, Integer> firstNode111 = Node.leafNode("111", 111);
+        Node<String, Integer> firstNode112 = Node.leafNode("112", 112);
+        Node<String, Integer> firstNode113 = Node.leafNode("113", 113);
+        Node<String, Integer> firstNode121 = Node.leafNode("121", 121);
+        Node<String, Integer> firstNode122 = Node.leafNode("122", 122);
+        Node<String, Integer> firstNode11 = node("11", 11, iterableWith(firstNode111, firstNode112, firstNode113));
+        Node<String, Integer> firstNode12 = node("12", 12, iterableWith(firstNode121, firstNode122));
+        Node<String, Integer> firstNode1 = node("1", 1, iterableWith(firstNode11, firstNode12));
+
+        Node<String, String> secondNode111 = Node.leafNode("111", "111");
+        Node<String, String> secondNode112 = Node.leafNode("112", "112");
+        Node<String, String> secondNode113 = Node.leafNode("113", "113");
+        Node<String, String> secondNode121 = Node.leafNode("121", "121");
+        Node<String, String> secondNode122 = Node.leafNode("122", "122");
+        Node<String, String> secondNode11 = node("11", "11", iterableWith(secondNode111, secondNode112, secondNode113));
+        Node<String, String> secondNode12 = node("12", "12", iterableWith(secondNode121, secondNode122));
+        Node<String, String> secondNode1 = node("1", "1", iterableWith(secondNode11, secondNode12));
+
+        Tree<String, Integer> firstTree = new Tree<>(firstNode1);
+        Tree<String, String> secondTree = new Tree<>(secondNode1);
+
+        Node<String, Pair<Integer, String>> expectedNode111 = Node.leafNode("111", tuple(111, "111"));
+        Node<String, Pair<Integer, String>> expectedNode112 = Node.leafNode("112", tuple(112, "112"));
+        Node<String, Pair<Integer, String>> expectedNode113 = Node.leafNode("113", tuple(113, "113"));
+        Node<String, Pair<Integer, String>> expectedNode121 = Node.leafNode("121", tuple(121, "121"));
+        Node<String, Pair<Integer, String>> expectedNode122 = Node.leafNode("122", tuple(122, "122"));
+        Node<String, Pair<Integer, String>> expectedNode11 = node("11", tuple(11, "11"), iterableWith(expectedNode111, expectedNode112, expectedNode113));
+        Node<String, Pair<Integer, String>> expectedNode12 = node("12", tuple(12, "12"), iterableWith(expectedNode121, expectedNode122));
+        Node<String, Pair<Integer, String>> expectedNode1 = node("1", tuple(1, "1"), iterableWith(expectedNode11, expectedNode12));
+
+        Tree<String, Pair<Integer, String>> expectedTree = new Tree<>(expectedNode1);
+
+        // When
+        Tree<String, Pair<Integer, String>> actualTree = firstTree.zip(secondTree);
+
+        // Then
+        assertThat(actualTree, is(expectedTree));
     }
 
     public static class ValueCollectingVisitor<T> implements Visitor<String, T, ValueCollectingVisitor<T>> {
