@@ -147,7 +147,7 @@ public class TreeTest {
     }
     
     @Test
-    public void zipsTwoTreesTogetherUsingLabelEquality() {
+    public void zipsTwoTreesTogetherByLabelWhenIdenticalInStructure() {
         // Given
         Node<String, Integer> firstNode111 = Node.leafNode("111", 111);
         Node<String, Integer> firstNode112 = Node.leafNode("112", 112);
@@ -178,6 +178,40 @@ public class TreeTest {
         Node<String, Pair<Integer, String>> expectedNode11 = node("11", tuple(11, "11"), iterableWith(expectedNode111, expectedNode112, expectedNode113));
         Node<String, Pair<Integer, String>> expectedNode12 = node("12", tuple(12, "12"), iterableWith(expectedNode121, expectedNode122));
         Node<String, Pair<Integer, String>> expectedNode1 = node("1", tuple(1, "1"), iterableWith(expectedNode11, expectedNode12));
+
+        Tree<String, Pair<Integer, String>> expectedTree = new Tree<>(expectedNode1);
+
+        // When
+        Tree<String, Pair<Integer, String>> actualTree = firstTree.zip(secondTree);
+
+        // Then
+        assertThat(actualTree, is(expectedTree));
+    }
+
+    @Test
+    public void zipsTwoTreesTogetherByLabelIgnoringNodesWithoutACorrespondingNode() {
+        // Given
+        Node<String, Integer> firstNode111 = Node.leafNode("111", 111);
+        Node<String, Integer> firstNode112 = Node.leafNode("112", 112);
+        Node<String, Integer> firstNode113 = Node.leafNode("113", 113);
+        Node<String, Integer> firstNode121 = Node.leafNode("121", 121);
+        Node<String, Integer> firstNode122 = Node.leafNode("122", 122);
+        Node<String, Integer> firstNode11 = node("11", 11, iterableWith(firstNode111, firstNode112, firstNode113));
+        Node<String, Integer> firstNode12 = node("12", 12, iterableWith(firstNode121, firstNode122));
+        Node<String, Integer> firstNode1 = node("1", 1, iterableWith(firstNode11, firstNode12));
+
+        Node<String, String> secondNode111 = Node.leafNode("111", "111");
+        Node<String, String> secondNode113 = Node.leafNode("113", "113");
+        Node<String, String> secondNode11 = node("11", "11", iterableWith(secondNode111, secondNode113));
+        Node<String, String> secondNode1 = node("1", "1", iterableWith(secondNode11));
+
+        Tree<String, Integer> firstTree = new Tree<>(firstNode1);
+        Tree<String, String> secondTree = new Tree<>(secondNode1);
+
+        Node<String, Pair<Integer, String>> expectedNode111 = Node.leafNode("111", tuple(111, "111"));
+        Node<String, Pair<Integer, String>> expectedNode113 = Node.leafNode("113", tuple(113, "113"));
+        Node<String, Pair<Integer, String>> expectedNode11 = node("11", tuple(11, "11"), iterableWith(expectedNode111, expectedNode113));
+        Node<String, Pair<Integer, String>> expectedNode1 = node("1", tuple(1, "1"), iterableWith(expectedNode11));
 
         Tree<String, Pair<Integer, String>> expectedTree = new Tree<>(expectedNode1);
 

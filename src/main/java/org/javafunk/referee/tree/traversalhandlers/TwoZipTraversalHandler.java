@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import org.javafunk.funk.datastructures.tuples.Pair;
+import org.javafunk.funk.monads.Option;
 import org.javafunk.referee.tree.Node;
 import org.javafunk.referee.tree.TraversalHandler;
 
@@ -34,9 +35,14 @@ public class TwoZipTraversalHandler<L, T, R>
     }
 
     @Override public void handleChild(Integer index, Node<L, T> child) {
-        children = iterableBuilderFrom(children)
-                .with(child.zip(Iterables.get(other.getChildren(), index)))
-                .build();
+        Option<Node<L, R>> possibleOtherChild = other.findChildBy(child.getLabel());
+
+        if (possibleOtherChild.hasValue()) {
+            children = iterableBuilderFrom(children)
+                    .with(child.zip(possibleOtherChild.get()))
+                    .build();
+        }
+
     }
 
     @Override public boolean goDeeper() {

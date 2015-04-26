@@ -8,7 +8,9 @@ import org.javafunk.funk.Literals;
 import org.javafunk.funk.datastructures.tuples.Pair;
 import org.javafunk.funk.functors.Action;
 import org.javafunk.funk.functors.functions.UnaryFunction;
+import org.javafunk.funk.functors.predicates.UnaryPredicate;
 import org.javafunk.funk.functors.procedures.UnaryProcedure;
+import org.javafunk.funk.monads.Option;
 import org.javafunk.referee.tree.traversalhandlers.MapValueTraversalHandler;
 import org.javafunk.referee.tree.traversalhandlers.TwoZipTraversalHandler;
 
@@ -44,6 +46,11 @@ public class Node<L, T> {
 
     public Node(L label, T value) {
         this(label, value, Literals.<Node<L, T>>iterable());
+    }
+
+
+    public boolean hasLabel(L label) {
+        return this.label.equals(label);
     }
 
     public <H extends TraversalHandler<L, T>> H traverseDepthFirstPreOrder(final H traversalHandler) {
@@ -158,5 +165,21 @@ public class Node<L, T> {
 
     public <R> Node<L, R> mapValue(final UnaryFunction<T, R> mapper) {
         return traverseBreadthFirstLeftToRight(MapValueTraversalHandler.<L, T, R>mappingValueWith(mapper)).getMapped();
+    }
+
+    public Option<Node<L, T>> findChildBy(final L label) {
+        return Eagerly.firstMatching(children, Predicates.<L, T>havingLabel(label));
+    }
+
+    public static class Predicates {
+        private Predicates() {}
+
+        public static <L, T> UnaryPredicate<Node<L, T>> havingLabel(final L label) {
+            return new UnaryPredicate<Node<L, T>>() {
+                @Override public boolean evaluate(Node<L, T> node) {
+                    return node.hasLabel(label);
+                }
+            };
+        }
     }
 }

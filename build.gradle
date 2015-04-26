@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
-    compile('org.javafunk.funk:funk:0.1.22') {
+    compile('org.javafunk.funk:funk:0.2.0.38') {
         exclude module: 'guava'
     }
 
