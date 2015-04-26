@@ -14,6 +14,7 @@ import org.javafunk.funk.monads.Option;
 import org.javafunk.referee.tree.traversalhandlers.MapLabelTraversalHandler;
 import org.javafunk.referee.tree.traversalhandlers.MapValueTraversalHandler;
 import org.javafunk.referee.tree.traversalhandlers.TwoZipTraversalHandler;
+import org.javafunk.referee.tree.visitors.FindByLabelVisitor;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -174,6 +175,10 @@ public class Node<L, T> {
 
     public Option<Node<L, T>> findChildBy(L label) {
         return Eagerly.firstMatching(children, Predicates.<L, T>havingLabel(label));
+    }
+
+    public Option<Node<L, T>> findDescendantBy(L label) {
+        return visitDepthFirstPreOrder(FindByLabelVisitor.<L, T>findByLabel(label)).getNode();
     }
 
     public static class Predicates {
