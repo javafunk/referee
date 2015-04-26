@@ -2,9 +2,7 @@ package org.javafunk.referee.tree;
 
 import lombok.Value;
 import org.javafunk.funk.datastructures.tuples.Pair;
-import org.javafunk.funk.functors.Mapper;
-
-import static org.javafunk.referee.tree.Traversal.DepthFirstPreOrder;
+import org.javafunk.funk.functors.functions.UnaryFunction;
 
 @Value
 public class Tree<L, T> {
@@ -22,8 +20,12 @@ public class Tree<L, T> {
         return rootNode.visit(traversal, visitor);
     }
 
-    public <R> Tree<L, R> mapValue(Mapper<T, R> mapper) {
-        return new Tree<>(rootNode.mapValue(mapper));
+    public <R> Tree<L, R> mapValues(UnaryFunction<T, R> valueMapper) {
+        return new Tree<>(rootNode.mapValues(valueMapper));
+    }
+
+    public <M> Tree<M, T> mapLabels(UnaryFunction<L, M> labelMapper) {
+        return new Tree(rootNode.mapLabels(labelMapper));
     }
 
     public <R> Tree<L, Pair<T, R>> zip(Tree<L, R> secondTree) {

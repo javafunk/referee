@@ -11,6 +11,7 @@ import org.javafunk.funk.functors.functions.UnaryFunction;
 import org.javafunk.funk.functors.predicates.UnaryPredicate;
 import org.javafunk.funk.functors.procedures.UnaryProcedure;
 import org.javafunk.funk.monads.Option;
+import org.javafunk.referee.tree.traversalhandlers.MapLabelTraversalHandler;
 import org.javafunk.referee.tree.traversalhandlers.MapValueTraversalHandler;
 import org.javafunk.referee.tree.traversalhandlers.TwoZipTraversalHandler;
 
@@ -163,11 +164,15 @@ public class Node<L, T> {
         return traverseBreadthFirstLeftToRight(TwoZipTraversalHandler.<L, T, R>usingZipWith(other)).getZipped();
     }
 
-    public <R> Node<L, R> mapValue(final UnaryFunction<T, R> mapper) {
-        return traverseBreadthFirstLeftToRight(MapValueTraversalHandler.<L, T, R>mappingValueWith(mapper)).getMapped();
+    public <R> Node<L, R> mapValues(UnaryFunction<T, R> valueMapper) {
+        return traverseDepthFirstPreOrder(MapValueTraversalHandler.<L, T, R>mappingValueWith(valueMapper)).getMapped();
     }
 
-    public Option<Node<L, T>> findChildBy(final L label) {
+    public <M> Node<M, T> mapLabels(UnaryFunction<L, M> labelMapper) {
+        return traverseDepthFirstPreOrder(MapLabelTraversalHandler.<L, T, M>mappingLabelWith(labelMapper)).getMapped();
+    }
+
+    public Option<Node<L, T>> findChildBy(L label) {
         return Eagerly.firstMatching(children, Predicates.<L, T>havingLabel(label));
     }
 

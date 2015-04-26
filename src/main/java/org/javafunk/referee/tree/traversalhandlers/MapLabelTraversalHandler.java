@@ -10,29 +10,29 @@ import static org.javafunk.funk.Literals.iterable;
 import static org.javafunk.funk.Literals.iterableBuilderFrom;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class MapValueTraversalHandler<L, T, R>
+public class MapLabelTraversalHandler<L, T, M>
         extends NoOpTraversalHandler<L, T> {
-    UnaryFunction<T, R> mapper;
-    @NonFinal L label = null;
-    @NonFinal R value = null;
-    @NonFinal Iterable<Node<L, R>> children = iterable();
+    UnaryFunction<L, M> mapper;
+    @NonFinal M label = null;
+    @NonFinal T value = null;
+    @NonFinal Iterable<Node<M, T>> children = iterable();
 
-    public static <L, T, R> MapValueTraversalHandler<L, T, R> mappingValueWith(UnaryFunction<T, R> mapper) {
-        return new MapValueTraversalHandler<>(mapper);
+    public static <L, T, M> MapLabelTraversalHandler<L, T, M> mappingLabelWith(UnaryFunction<L, M> mapper) {
+        return new MapLabelTraversalHandler<>(mapper);
     }
 
-    public MapValueTraversalHandler(UnaryFunction<T, R> mapper) {
+    public MapLabelTraversalHandler(UnaryFunction<L, M> mapper) {
         this.mapper = mapper;
     }
 
     @Override public void handleSelf(Node<L, T> self) {
-        label = self.getLabel();
-        value = mapper.call(self.getValue());
+        label = mapper.call(self.getLabel());
+        value = self.getValue();
     }
 
     @Override public void handleChild(Integer index, Node<L, T> child) {
         children = iterableBuilderFrom(children)
-                .with(child.mapValues(mapper))
+                .with(child.mapLabels(mapper))
                 .build();
     }
 
@@ -40,7 +40,7 @@ public class MapValueTraversalHandler<L, T, R>
         return false;
     }
 
-    public Node<L, R> getMapped() {
+    public Node<M, T> getMapped() {
         return Node.node(label, value, children);
     }
 }

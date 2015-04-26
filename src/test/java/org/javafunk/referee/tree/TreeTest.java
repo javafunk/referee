@@ -3,6 +3,7 @@ package org.javafunk.referee.tree;
 import lombok.Getter;
 import org.javafunk.funk.datastructures.tuples.Pair;
 import org.javafunk.funk.functors.Mapper;
+import org.javafunk.funk.functors.functions.UnaryFunction;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -117,8 +118,8 @@ public class TreeTest {
         // Given
         Node<String, Integer> firstIntegerGrandchild = Node.leafNode("first-grandchild", 111);
         Node<String, Integer> secondIntegerGrandchild = Node.leafNode("second-grandchild", 112);
-        Node<String, Integer> thirdIntegerGrandchild = Node.leafNode("second-grandchild", 121);
-        Node<String, Integer> fourthIntegerGrandchild = Node.leafNode("second-grandchild", 122);
+        Node<String, Integer> thirdIntegerGrandchild = Node.leafNode("third-grandchild", 121);
+        Node<String, Integer> fourthIntegerGrandchild = Node.leafNode("fourth-grandchild", 122);
         Node<String, Integer> firstIntegerChild = node("first-child", 11, iterableWith(firstIntegerGrandchild, secondIntegerGrandchild));
         Node<String, Integer> secondIntegerChild = node("second-child", 12, iterableWith(thirdIntegerGrandchild, fourthIntegerGrandchild));
         Node<String, Integer> rootIntegerNode = node("root", 1, iterableWith(firstIntegerChild, secondIntegerChild));
@@ -127,8 +128,8 @@ public class TreeTest {
 
         Node<String, String> firstStringGrandchild = Node.leafNode("first-grandchild", "111");
         Node<String, String> secondStringGrandchild = Node.leafNode("second-grandchild", "112");
-        Node<String, String> thirdStringGrandchild = Node.leafNode("second-grandchild", "121");
-        Node<String, String> fourthStringGrandchild = Node.leafNode("second-grandchild", "122");
+        Node<String, String> thirdStringGrandchild = Node.leafNode("third-grandchild", "121");
+        Node<String, String> fourthStringGrandchild = Node.leafNode("fourth-grandchild", "122");
         Node<String, String> firstStringChild = node("first-child", "11", iterableWith(firstStringGrandchild, secondStringGrandchild));
         Node<String, String> secondStringChild = node("second-child", "12", iterableWith(thirdStringGrandchild, fourthStringGrandchild));
         Node<String, String> rootStringNode = node("root", "1", iterableWith(firstStringChild, secondStringChild));
@@ -136,9 +137,43 @@ public class TreeTest {
         Tree<String, String> expected = new Tree<>(rootStringNode);
 
         // When
-        Tree<String, String> actual = initial.mapValue(new Mapper<Integer, String>() {
+        Tree<String, String> actual = initial.mapValues(new Mapper<Integer, String>() {
             @Override public String map(Integer input) {
                 return String.valueOf(input);
+            }
+        });
+
+        // Then
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void mapsNodeLabelsUsingSuppliedMapper() {
+        // Given
+        Node<String, Integer> firstInitialGrandchild = Node.leafNode("first-grandchild", 111);
+        Node<String, Integer> secondInitialGrandchild = Node.leafNode("second-grandchild", 112);
+        Node<String, Integer> thirdInitialGrandchild = Node.leafNode("third-grandchild", 121);
+        Node<String, Integer> fourthInitialGrandchild = Node.leafNode("fourth-grandchild", 122);
+        Node<String, Integer> firstInitialChild = node("first-child", 11, iterableWith(firstInitialGrandchild, secondInitialGrandchild));
+        Node<String, Integer> secondInitialChild = node("second-child", 12, iterableWith(thirdInitialGrandchild, fourthInitialGrandchild));
+        Node<String, Integer> rootInitialNode = node("root", 1, iterableWith(firstInitialChild, secondInitialChild));
+
+        Tree<String, Integer> initial = new Tree<>(rootInitialNode);
+
+        Node<String, Integer> firstExpectedGrandchild = Node.leafNode("mapped-first-grandchild", 111);
+        Node<String, Integer> secondExpectedGrandchild = Node.leafNode("mapped-second-grandchild", 112);
+        Node<String, Integer> thirdExpectedGrandchild = Node.leafNode("mapped-third-grandchild", 121);
+        Node<String, Integer> fourthExpectedGrandchild = Node.leafNode("mapped-fourth-grandchild", 122);
+        Node<String, Integer> firstExpectedChild = node("mapped-first-child", 11, iterableWith(firstExpectedGrandchild, secondExpectedGrandchild));
+        Node<String, Integer> secondExpectedChild = node("mapped-second-child", 12, iterableWith(thirdExpectedGrandchild, fourthExpectedGrandchild));
+        Node<String, Integer> rootExpectedNode = node("mapped-root", 1, iterableWith(firstExpectedChild, secondExpectedChild));
+
+        Tree<String, Integer> expected = new Tree<>(rootExpectedNode);
+
+        // When
+        Tree<String, Integer> actual = initial.mapLabels(new UnaryFunction<String, String>() {
+            @Override public String call(String label) {
+                return "mapped-" + label;
             }
         });
 
