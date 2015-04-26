@@ -20,12 +20,20 @@ public class Tree<L, T> {
         return rootNode.visit(traversal, visitor);
     }
 
+    public <H extends TraversalHandler<L, T>> H traverse(H traversalHandler) {
+        return rootNode.traverse(traversalHandler);
+    }
+
+    public <H extends TraversalHandler<L, T>> H traverse(Traversal traversal, H traversalHandler) {
+        return rootNode.traverse(traversal, traversalHandler);
+    }
+
     public <R> Tree<L, R> mapValues(UnaryFunction<T, R> valueMapper) {
         return new Tree<>(rootNode.mapValues(valueMapper));
     }
 
     public <M> Tree<M, T> mapLabels(UnaryFunction<L, M> labelMapper) {
-        return new Tree(rootNode.mapLabels(labelMapper));
+        return new Tree<>(rootNode.mapLabels(labelMapper));
     }
 
     public <R> Tree<L, Pair<T, R>> zip(Tree<L, R> secondTree) {

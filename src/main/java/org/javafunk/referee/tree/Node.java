@@ -55,6 +55,14 @@ public class Node<L, T> {
         return this.label.equals(label);
     }
 
+    public <H extends TraversalHandler<L, T>> H traverse(H traversalHandler) {
+        return DepthFirstPreOrder.traverse(this, traversalHandler);
+    }
+
+    public <H extends TraversalHandler<L, T>> H traverse(Traversal traversal, H traversalHandler) {
+        return traversal.traverse(this, traversalHandler);
+    }
+
     public <H extends TraversalHandler<L, T>> H traverseDepthFirstPreOrder(final H traversalHandler) {
         traversalHandler.handleSelf(this);
 
@@ -138,11 +146,11 @@ public class Node<L, T> {
     }
 
     public <S extends Visitor<L, T, S>> S visit(S visitor) {
-        return DepthFirstPreOrder.applyTo(this, visitor);
+        return DepthFirstPreOrder.visit(this, visitor);
     }
 
     public <S extends Visitor<L, T, S>> S visit(Traversal traversal, S visitor) {
-        return traversal.applyTo(this, visitor);
+        return traversal.visit(this, visitor);
     }
 
     public <S extends Visitor<L, T, S>> S visitDepthFirstPreOrder(final S visitor) {
