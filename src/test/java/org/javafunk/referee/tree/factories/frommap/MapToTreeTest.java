@@ -1,4 +1,4 @@
-package org.javafunk.referee;
+package org.javafunk.referee.tree.factories.frommap;
 
 import org.javafunk.funk.Literals;
 import org.javafunk.referee.tree.Node;
@@ -11,10 +11,8 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.javafunk.funk.Literals.*;
-import static org.javafunk.referee.MapToTree.fromMapToTree;
+import static org.javafunk.referee.tree.factories.frommap.MapToTree.fromMapToTree;
 import static org.javafunk.referee.tree.Node.branchNode;
-import static org.javafunk.referee.tree.Node.leafNode;
-import static org.javafunk.referee.tree.Node.node;
 import static org.javafunk.referee.tree.Tree.tree;
 
 public class MapToTreeTest {

@@ -1,12 +1,17 @@
 package org.javafunk.referee.support;
 
 import lombok.Value;
+import org.javafunk.funk.functors.functions.UnaryFunction;
 
 import java.lang.reflect.Field;
 
 @Value
 public class EnrichedField {
     Field underlyingField;
+
+    public String getName() {
+        return underlyingField.getName();
+    }
 
     public Class<?> getType() {
         return underlyingField.getType();
@@ -19,6 +24,16 @@ public class EnrichedField {
             return instance;
         } catch (IllegalAccessException exception) {
             throw new RuntimeException(exception);
+        }
+    }
+
+    public static class Mappers {
+        public static UnaryFunction<Field, EnrichedField> toEnrichedField() {
+            return new UnaryFunction<Field, EnrichedField>() {
+                @Override public EnrichedField call(Field field) {
+                    return new EnrichedField(field);
+                }
+            };
         }
     }
 }

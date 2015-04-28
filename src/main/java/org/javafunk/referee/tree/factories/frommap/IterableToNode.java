@@ -1,11 +1,11 @@
-package org.javafunk.referee;
+package org.javafunk.referee.tree.factories.frommap;
 
 import org.javafunk.funk.Eagerly;
 import org.javafunk.funk.Lazily;
 import org.javafunk.funk.functors.functions.UnaryFunction;
 import org.javafunk.referee.tree.Node;
 
-import static org.javafunk.referee.IndexedElementToNode.fromIndexedElementToNode;
+import static org.javafunk.referee.tree.factories.frommap.IndexedElementToNode.fromIndexedElementToNode;
 import static org.javafunk.referee.tree.Node.branchNode;
 
 public class IterableToNode implements UnaryFunction<Iterable<Object>, Node<Object, Object>> {

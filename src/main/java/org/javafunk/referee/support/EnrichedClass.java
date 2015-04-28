@@ -8,13 +8,13 @@ import org.javafunk.funk.functors.functions.UnaryFunction;
 import org.javafunk.funk.monads.Option;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 import static org.javafunk.funk.Literals.iterableFrom;
 import static org.javafunk.funk.Literals.setFrom;
 import static org.javafunk.funk.monads.Option.none;
 import static org.javafunk.funk.monads.Option.option;
+import static org.javafunk.referee.support.EnrichedField.Mappers.toEnrichedField;
 import static org.javafunk.referee.support.EnrichedMethod.toEnrichedMethod;
 
 @ToString
@@ -36,6 +36,10 @@ public class EnrichedClass<T> {
         }
     }
 
+    public Iterable<EnrichedField> getAllFields() {
+        return Lazily.map(iterableFrom(underlyingClass.getDeclaredFields()), toEnrichedField());
+    }
+
     public Option<Constructor<T>> findNoParameterConstructor() {
         try {
             return option(underlyingClass.getDeclaredConstructor());
@@ -46,7 +50,7 @@ public class EnrichedClass<T> {
 
     public Option<EnrichedClass<?>> findInnerClassWithName(String innerClassName) {
         return Eagerly.firstMatching(iterableFrom(underlyingClass.getClasses()), Classes.havingName(innerClassName))
-                .map(toEnrichedClass());
+                .map(Mappers.toEnrichedClass());
     }
 
     public Option<EnrichedField> findFieldWithName(String fieldName) {
@@ -60,27 +64,21 @@ public class EnrichedClass<T> {
                 Methods.havingName(methodName)), toEnrichedMethod())));
     }
 
-    private static UnaryFunction<Field, EnrichedField> toEnrichedField() {
-        return new UnaryFunction<Field, EnrichedField>() {
-            @Override public EnrichedField call(Field field) {
-                return new EnrichedField(field);
-            }
-        };
-    }
+    public static class Mappers {
+        public static UnaryFunction<Class<?>, EnrichedClass<?>> toEnrichedClass() {
+            return new UnaryFunction<Class<?>, EnrichedClass<?>>() {
+                @Override public EnrichedClass<?> call(Class<?> klass) {
+                    return new EnrichedClass<>(klass);
+                }
+            };
+        }
 
-    public static UnaryFunction<Class<?>, EnrichedClass<?>> toEnrichedClass() {
-        return new UnaryFunction<Class<?>, EnrichedClass<?>>() {
-            @Override public EnrichedClass<?> call(Class<?> klass) {
-                return new EnrichedClass<>(klass);
-            }
-        };
-    }
-
-    public static UnaryFunction<EnrichedClass<?>, ?> toInstance() {
-        return new UnaryFunction<EnrichedClass<?>, Object>() {
-            @Override public Object call(EnrichedClass<?> enrichedClass) {
-                return enrichedClass.instantiate();
-            }
-        };
+        public static UnaryFunction<EnrichedClass<?>, ?> toInstance() {
+            return new UnaryFunction<EnrichedClass<?>, Object>() {
+                @Override public Object call(EnrichedClass<?> enrichedClass) {
+                    return enrichedClass.instantiate();
+                }
+            };
+        }
     }
 }

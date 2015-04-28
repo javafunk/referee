@@ -21,8 +21,8 @@ public class BuilderIntegrationTest {
         // Given
         Map<String, Object> definition = parse(
                 "One: The first string\n" +
-                        "Two: The second string\n" +
-                        "Three: The third string");
+                "Two: The second string\n" +
+                "Three: The third string");
 
         // When
         PopulationResult<ThingWithBuilderAndStrings> result = populationEngine()
@@ -42,8 +42,8 @@ public class BuilderIntegrationTest {
         // Given
         Map<String, Object> definition = parse(
                 "A String: Some sort of string\n" +
-                        "An Integer: 100\n" +
-                        "A Boolean: true");
+                "An Integer: 100\n" +
+                "A Boolean: true");
 
         // When
         PopulationResult<ThingWithBuilderAndMixedPrimitiveTypes> result = populationEngine()
@@ -63,8 +63,8 @@ public class BuilderIntegrationTest {
         // Given
         Map<String, Object> definition = parse(
                 "A BigDecimal: '100.56'\n" +
-                        "A BigInteger: 1024\n" +
-                        "A Long: 12345678");
+                "A BigInteger: 1024\n" +
+                "A Long: 12345678");
 
         // When
         PopulationResult<ThingWithBuilderAndTypesNeedingCoercion> result = populationEngine()

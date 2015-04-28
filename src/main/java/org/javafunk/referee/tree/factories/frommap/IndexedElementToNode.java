@@ -1,4 +1,4 @@
-package org.javafunk.referee;
+package org.javafunk.referee.tree.factories.frommap;
 
 import org.javafunk.funk.Literals;
 import org.javafunk.funk.datastructures.tuples.Pair;

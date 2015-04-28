@@ -14,6 +14,7 @@ import static org.javafunk.funk.Literals.iterableWith;
 import static org.javafunk.funk.Literals.setWith;
 import static org.javafunk.funk.matchers.OptionMatchers.hasValue;
 import static org.javafunk.matchbox.Matchers.hasOnlyItemsInAnyOrder;
+import static org.javafunk.matchbox.Matchers.hasOnlyItemsInOrder;
 
 public class EnrichedClassTest {
     public static class WithNoParameterConstructor {
@@ -43,6 +44,12 @@ public class EnrichedClassTest {
     public static class WithRequiredField {
         private String someField;
         private Integer someOtherField;
+    }
+
+    public static class WithSomeFields {
+        private String stringField;
+        private Object objectField;
+        private Integer integerField;
     }
 
     @Test
@@ -154,5 +161,23 @@ public class EnrichedClassTest {
 
         // Then
         assertThat(actual, hasValue(expected));
+    }
+
+    @Test
+    public void getsAllFields() throws Exception {
+        // Given
+        Class<WithSomeFields> klass = WithSomeFields.class;
+
+        EnrichedClass<WithSomeFields> enriched = new EnrichedClass<>(klass);
+
+        EnrichedField stringField = new EnrichedField(klass.getDeclaredField("stringField"));
+        EnrichedField objectField = new EnrichedField(klass.getDeclaredField("objectField"));
+        EnrichedField integerField = new EnrichedField(klass.getDeclaredField("integerField"));
+
+        // When
+        Iterable<EnrichedField> fields = enriched.getAllFields();
+
+        // Then
+        assertThat(fields, hasOnlyItemsInOrder(stringField, objectField, integerField));
     }
 }

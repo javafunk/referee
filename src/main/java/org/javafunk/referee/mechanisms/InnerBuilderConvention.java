@@ -10,7 +10,7 @@ import org.javafunk.referee.support.EnrichedMethods;
 import static java.lang.String.format;
 import static org.javafunk.funk.Eagerly.first;
 import static org.javafunk.funk.Literals.iterableFrom;
-import static org.javafunk.referee.support.EnrichedClass.toEnrichedClass;
+import static org.javafunk.referee.support.EnrichedClass.Mappers.toEnrichedClass;
 
 @Value
 public class InnerBuilderConvention implements BuilderConvention {
