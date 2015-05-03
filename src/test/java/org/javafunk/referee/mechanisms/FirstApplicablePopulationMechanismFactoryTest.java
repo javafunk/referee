@@ -27,11 +27,11 @@ public class FirstApplicablePopulationMechanismFactoryTest {
         PopulationMechanism<ThingWithBuilderAndStrings> expected =
                 (PopulationMechanism<ThingWithBuilderAndStrings>) mock(PopulationMechanism.class);
 
-        given(first.validateFor(targetType, mapOf(String.class, Object.class), ProblemReport.empty()))
+        given(first.validateFor(targetType, mapOf(Object.class, Object.class), ProblemReport.empty()))
                 .willReturn(ProblemReport.of(missingInnerBuilderProblem("$", targetType)));
-        given(second.validateFor(targetType, mapOf(String.class, Object.class), ProblemReport.empty()))
+        given(second.validateFor(targetType, mapOf(Object.class, Object.class), ProblemReport.empty()))
                 .willReturn(ProblemReport.empty());
-        given(third.validateFor(targetType, mapOf(String.class, Object.class), ProblemReport.empty()))
+        given(third.validateFor(targetType, mapOf(Object.class, Object.class), ProblemReport.empty()))
                 .willReturn(ProblemReport.empty());
 
         given(second.mechanismFor(targetType)).willReturn(expected);

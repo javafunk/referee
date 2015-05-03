@@ -29,7 +29,7 @@ public class FirstApplicablePopulationMechanismFactory implements PopulationMech
 
     @Override public <C> ProblemReport validateFor(
             Class<C> targetType,
-            Map<String, Object> definition,
+            Map<Object, Object> definition,
             ProblemReport problemReport) {
         if (Eagerly.firstMatching(factories, thatCanPopulate(targetType)).hasValue()) {
             return ProblemReport.empty();
@@ -37,10 +37,10 @@ public class FirstApplicablePopulationMechanismFactory implements PopulationMech
         return ProblemReport.of(Problems.noValidMechanism("$", targetType));
     }
 
-    @Override public <C> C populateFor(Class<C> targetType, Map<String, Object> definition) {
+    @Override public <C> C populateFor(Class<C> targetType, Map<Object, Object> definition) {
         PopulationMechanism<C> populationMechanism = mechanismFor(targetType);
 
-        for (Map.Entry<String, Object> attribute : definition.entrySet()) {
+        for (Map.Entry<Object, Object> attribute : definition.entrySet()) {
             String attributeName = attributeNameFrom(attribute.getKey());
             Object attributeValue = attribute.getValue();
 
@@ -55,9 +55,10 @@ public class FirstApplicablePopulationMechanismFactory implements PopulationMech
                 .getOrThrow(new RuntimeException());
     }
 
-    private String attributeNameFrom(String identifier) {
-        String joined = identifier.replace(" ", "");
-        String firstLetter = identifier.substring(0, 1);
+    private String attributeNameFrom(Object attributeNameObject) {
+        String attributeNameString = attributeNameObject.toString();
+        String joined = attributeNameString.replace(" ", "");
+        String firstLetter = attributeNameString.substring(0, 1);
         String attributeName = firstLetter.toLowerCase() + joined.substring(1);
 
         return attributeName;
@@ -76,7 +77,7 @@ public class FirstApplicablePopulationMechanismFactory implements PopulationMech
         return new UnaryPredicate<PopulationMechanismFactory>() {
             @Override public boolean evaluate(PopulationMechanismFactory factory) {
                 return factory
-                        .validateFor(targetType, mapOf(String.class, Object.class), ProblemReport.empty())
+                        .validateFor(targetType, mapOf(Object.class, Object.class), ProblemReport.empty())
                         .hasNoProblems();
             }
         };

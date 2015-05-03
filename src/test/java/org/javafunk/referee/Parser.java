@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class Parser {
     @SuppressWarnings("unchecked")
-    public static Map<String, Object> parse(String yamlString) {
-        return (Map<String, Object>) new Yaml().load(yamlString);
+    public static Map<Object, Object> parse(String yamlString) {
+        return (Map<Object, Object>) new Yaml().load(yamlString);
     }
 }

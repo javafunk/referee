@@ -26,7 +26,7 @@ public class BuilderPopulationMechanismFactory implements PopulationMechanismFac
 
     @Override public <C> ProblemReport validateFor(
             Class<C> targetType,
-            Map<String, Object> definition,
+            Map<Object, Object> definition,
             ProblemReport problemReport) {
         ProblemReport updatedProblemReport = problemReport;
 
@@ -37,7 +37,7 @@ public class BuilderPopulationMechanismFactory implements PopulationMechanismFac
         if (possibleBuilderClass.hasValue()) {
             BuilderConvention convention = new InnerBuilderConvention(targetType);
 
-            for (Map.Entry<String, Object> attribute : definition.entrySet()) {
+            for (Map.Entry<Object, Object> attribute : definition.entrySet()) {
                 String attributeName = attributeNameFrom(attribute.getKey());
                 if (convention.witherFor(attributeName).hasNoValue()) {
                     updatedProblemReport = updatedProblemReport
@@ -53,10 +53,10 @@ public class BuilderPopulationMechanismFactory implements PopulationMechanismFac
         }
     }
 
-    @Override public <C> C populateFor(Class<C> targetType, Map<String, Object> definition) {
+    @Override public <C> C populateFor(Class<C> targetType, Map<Object, Object> definition) {
         PopulationMechanism<C> populationMechanism = mechanismFor(targetType);
 
-        for (Map.Entry<String, Object> attribute : definition.entrySet()) {
+        for (Map.Entry<Object, Object> attribute : definition.entrySet()) {
             String attributeName = attributeNameFrom(attribute.getKey());
             Object attributeValue = attribute.getValue();
 
@@ -69,9 +69,10 @@ public class BuilderPopulationMechanismFactory implements PopulationMechanismFac
         return new BuilderPopulationMechanism<>(targetType, coercionEngine);
     }
 
-    private String attributeNameFrom(String identifier) {
-        String joined = identifier.replace(" ", "");
-        String firstLetter = identifier.substring(0, 1);
+    private String attributeNameFrom(Object attributeNameObject) {
+        String attributeNameString = attributeNameObject.toString();
+        String joined = attributeNameString.replace(" ", "");
+        String firstLetter = attributeNameString.substring(0, 1);
         String attributeName = firstLetter.toLowerCase() + joined.substring(1);
 
         return attributeName;

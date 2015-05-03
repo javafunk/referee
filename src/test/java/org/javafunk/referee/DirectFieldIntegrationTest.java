@@ -17,10 +17,10 @@ public class DirectFieldIntegrationTest {
     @Test
     public void populatesObjectWithOnlyStringFields() throws Exception {
         // Given
-        Map<String, Object> definition = parse(
+        Map<Object, Object> definition = parse(
                 "One: The first string\n" +
-                "Two: The second string\n" +
-                "Three: The third string");
+                        "Two: The second string\n" +
+                        "Three: The third string");
 
         // When
         PopulationResult<ThingWithNoBuilderAndStrings> result = populationEngine()
@@ -38,7 +38,7 @@ public class DirectFieldIntegrationTest {
     @Test
     public void populatesObjectWithMixedPrimitiveTypes() throws Exception {
         // Given
-        Map<String, Object> definition = parse(
+        Map<Object, Object> definition = parse(
                 "A String: Some sort of string\n" +
                         "An Integer: 100\n" +
                         "A Boolean: true");
@@ -59,7 +59,7 @@ public class DirectFieldIntegrationTest {
     @Test
     public void populatesObjectWhereTypesNeedCoercion() throws Exception {
         // Given
-        Map<String, Object> definition = parse(
+        Map<Object, Object> definition = parse(
                 "A BigDecimal: '100.56'\n" +
                         "A BigInteger: 1024\n" +
                         "A Long: 12345678");
@@ -80,10 +80,10 @@ public class DirectFieldIntegrationTest {
     @Test(enabled = false)
     public void populatesObjectWithBuilderAndIterableOfPrimitives() throws Exception {
         // Given
-        Map<String, Object> definition = parse(
+        Map<Object, Object> definition = parse(
                 "Strings:\n" +
-                "  - First\n" +
-                "  - Second");
+                        "  - First\n" +
+                        "  - Second");
 
         // When
         PopulationResult<ThingWithNoBuilderAndIterableOfStrings> result = populationEngine()
@@ -99,10 +99,10 @@ public class DirectFieldIntegrationTest {
     @Test(enabled = false)
     public void populatesObjectWithBuilderAndIterableOfTypeNeedingCoercion() throws Exception {
         // Given
-        Map<String, Object> definition = parse(
+        Map<Object, Object> definition = parse(
                 "Longs:\n" +
-                "  - 1\n" +
-                "  - 2");
+                        "  - 1\n" +
+                        "  - 2");
 
         // When
         PopulationResult<ThingWithNoBuilderAndIterableOfLongs> result = populationEngine()
@@ -118,7 +118,7 @@ public class DirectFieldIntegrationTest {
     @Test
     public void usesDirectFieldPopulationIfNoBuilderExists() throws Exception {
         // Given
-        Map<String, Object> definition = parse(
+        Map<Object, Object> definition = parse(
                 "One: The first string\n" +
                         "Two: The second string\n");
 

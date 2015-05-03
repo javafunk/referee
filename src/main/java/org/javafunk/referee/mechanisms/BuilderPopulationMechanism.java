@@ -61,7 +61,7 @@ public class BuilderPopulationMechanism<B> implements PopulationMechanism<B> {
             Iterable<Object> coercedValues = coerceElementsTo(attributeType, attributeValue);
             arguments = iterableWith(first(coercedValues).get(), toArrayOf(attributeType, rest(coercedValues)));
         } else if (ConventionSelector.appliesTo(attributeType)) {
-            @SuppressWarnings("unchecked") Map<String, Object> attributeValueAsMap = (Map<String, Object>) attributeValue;
+            @SuppressWarnings("unchecked") Map<Object, Object> attributeValueAsMap = (Map<Object, Object>) attributeValue;
             arguments = iterableWith(factory.populateFor(attributeType.getUnderlyingClass(), attributeValueAsMap));
         } else {
             arguments = iterableWith(coerceTo(attributeValue, attributeType));

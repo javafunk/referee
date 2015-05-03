@@ -18,7 +18,7 @@ public class PopulationEngine<T> {
     Class<T> klass;
     PopulationMechanismFactory mechanismFactory;
 
-    public PopulationResult<T> process(Map<String, Object> definition) {
+    public PopulationResult<T> process(Map<Object, Object> definition) {
         ProblemReport problemReport = mechanismFactory.validateFor(klass, definition, ProblemReport.empty());
 
         if (problemReport.hasProblems()) {

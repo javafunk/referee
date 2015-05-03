@@ -19,10 +19,10 @@ public class BuilderIntegrationTest {
     @Test
     public void populatesObjectWithOnlyStringFields() throws Exception {
         // Given
-        Map<String, Object> definition = parse(
+        Map<Object, Object> definition = parse(
                 "One: The first string\n" +
-                "Two: The second string\n" +
-                "Three: The third string");
+                        "Two: The second string\n" +
+                        "Three: The third string");
 
         // When
         PopulationResult<ThingWithBuilderAndStrings> result = populationEngine()
@@ -40,10 +40,10 @@ public class BuilderIntegrationTest {
     @Test
     public void populatesObjectWithMixedPrimitiveTypes() throws Exception {
         // Given
-        Map<String, Object> definition = parse(
+        Map<Object, Object> definition = parse(
                 "A String: Some sort of string\n" +
-                "An Integer: 100\n" +
-                "A Boolean: true");
+                        "An Integer: 100\n" +
+                        "A Boolean: true");
 
         // When
         PopulationResult<ThingWithBuilderAndMixedPrimitiveTypes> result = populationEngine()
@@ -61,10 +61,10 @@ public class BuilderIntegrationTest {
     @Test
     public void populatesObjectWhereTypesNeedCoercion() throws Exception {
         // Given
-        Map<String, Object> definition = parse(
+        Map<Object, Object> definition = parse(
                 "A BigDecimal: '100.56'\n" +
-                "A BigInteger: 1024\n" +
-                "A Long: 12345678");
+                        "A BigInteger: 1024\n" +
+                        "A Long: 12345678");
 
         // When
         PopulationResult<ThingWithBuilderAndTypesNeedingCoercion> result = populationEngine()
@@ -82,10 +82,10 @@ public class BuilderIntegrationTest {
     @Test
     public void populatesObjectWithBuilderAndIterableOfPrimitives() throws Exception {
         // Given
-        Map<String, Object> definition = parse(
+        Map<Object, Object> definition = parse(
                 "Strings:\n" +
-                "  - First\n" +
-                "  - Second");
+                        "  - First\n" +
+                        "  - Second");
 
         // When
         PopulationResult<ThingWithBuilderAndIterableOfStrings> result = populationEngine()
@@ -101,10 +101,10 @@ public class BuilderIntegrationTest {
     @Test
     public void populatesObjectWithBuilderAndIterableOfTypeNeedingCoercion() throws Exception {
         // Given
-        Map<String, Object> definition = parse(
+        Map<Object, Object> definition = parse(
                 "Longs:\n" +
-                "  - 1\n" +
-                "  - 2");
+                        "  - 1\n" +
+                        "  - 2");
 
         // When
         PopulationResult<ThingWithBuilderAndIterableOfLongs> result = populationEngine()
@@ -120,15 +120,15 @@ public class BuilderIntegrationTest {
     @Test
     public void populatesObjectRecursively() throws Exception {
         // Given
-        Map<String, Object> definition = parse(
+        Map<Object, Object> definition = parse(
                 "First Thing: \n" +
-                "  One: Value 1.1\n" +
-                "  Two: Value 1.2\n" +
-                "  Three: Value 1.3\n" +
-                "Second Thing: \n" +
-                "  One: Value 2.1\n" +
-                "  Two: Value 2.2\n" +
-                "  Three: Value 2.3");
+                        "  One: Value 1.1\n" +
+                        "  Two: Value 1.2\n" +
+                        "  Three: Value 1.3\n" +
+                        "Second Thing: \n" +
+                        "  One: Value 2.1\n" +
+                        "  Two: Value 2.2\n" +
+                        "  Three: Value 2.3");
 
         // When
         PopulationResult<ThingWithThingsWithBuilderAndStrings> result = populationEngine()
@@ -145,7 +145,7 @@ public class BuilderIntegrationTest {
     @Test
     public void usesInnerBuilderDefinedDefaultsWhenNotAllAttributesAreSpecified() throws Exception {
         // Given
-        Map<String, Object> definition = parse(
+        Map<Object, Object> definition = parse(
                 "One: Different first");
 
         ThingWithBuilderAndStrings builtResult = new ThingWithBuilderAndStrings.Builder().build();
@@ -165,9 +165,9 @@ public class BuilderIntegrationTest {
 
     @Test
     public void reportsProblemWhenNoInnerBuilderFoundForTargetType() throws Exception {
-        Map<String, Object> definition = parse(
+        Map<Object, Object> definition = parse(
                 "One: First\n" +
-                "Two: Second");
+                        "Two: Second");
 
         // When
         PopulationResult<ThingWithNoBuilder> result = populationEngine()
@@ -184,7 +184,7 @@ public class BuilderIntegrationTest {
     @Test
     public void reportsProblemWhenNoWitherFoundForAttribute() throws Exception {
         // Given
-        Map<String, Object> definition = parse(
+        Map<Object, Object> definition = parse(
                 "No Wither: Value");
 
         // When

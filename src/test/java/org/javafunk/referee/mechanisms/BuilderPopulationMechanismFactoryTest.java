@@ -32,7 +32,7 @@ public class BuilderPopulationMechanismFactoryTest {
     public void hasNoProblemIfTargetTypeHasInnerBuilderClassAndWithersForAllFields() throws Exception {
         // Given
         Class<ThingWithBuilder> targetType = ThingWithBuilder.class;
-        Map<String, Object> definition = mapOf(String.class, Object.class);
+        Map<Object, Object> definition = mapOf(Object.class, Object.class);
 
         BuilderPopulationMechanismFactory mechanismFactory = new BuilderPopulationMechanismFactory(
                 FunctionBasedCoercionEngine.withDefaultCoercions());
@@ -48,7 +48,7 @@ public class BuilderPopulationMechanismFactoryTest {
     public void hasProblemIfTargetTypeHasNoInnerBuilderClass() throws Exception {
         // Given
         Class<ThingWithNoBuilder> targetType = ThingWithNoBuilder.class;
-        Map<String, Object> definition = mapOf(String.class, Object.class);
+        Map<Object, Object> definition = mapOf(Object.class, Object.class);
 
         BuilderPopulationMechanismFactory mechanismFactory = new BuilderPopulationMechanismFactory(
                 FunctionBasedCoercionEngine.withDefaultCoercions());
@@ -64,7 +64,7 @@ public class BuilderPopulationMechanismFactoryTest {
     public void hasProblemIfTargetTypeIsMissingAWither() throws Exception {
         // Given
         Class<ThingWithBuilderAndMissingWither> targetType = ThingWithBuilderAndMissingWither.class;
-        Map<String, Object> definition = Literals.<String, Object>mapWithKeyValuePair("No Wither", "Value");
+        Map<Object, Object> definition = Literals.<Object, Object>mapWithKeyValuePair("No Wither", "Value");
 
         BuilderPopulationMechanismFactory mechanismFactory = new BuilderPopulationMechanismFactory(
                 FunctionBasedCoercionEngine.withDefaultCoercions());
@@ -80,7 +80,7 @@ public class BuilderPopulationMechanismFactoryTest {
     public void reportsAllMissingWithProblemsAtOnce() throws Exception {
         // Given
         Class<ThingWithBuilderAndMissingWithers> targetType = ThingWithBuilderAndMissingWithers.class;
-        Map<String, Object> definition = Literals.<String, Object>mapWithKeyValuePairs(
+        Map<Object, Object> definition = Literals.<Object, Object>mapWithKeyValuePairs(
                 "First Missing Wither", "Value 1",
                 "Second Missing Wither", "Value 2",
                 "Present Wither", "Value 3");
