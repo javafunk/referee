@@ -27,13 +27,13 @@ public class ClassToTreeByFieldTest {
         EnrichedField enrichedFieldTwo = enrichedSourceClass.findFieldWithName("two").get();
         EnrichedField enrichedFieldThree = enrichedSourceClass.findFieldWithName("three").get();
 
-        Tree<String, Object> expected = tree(branchNode("$", iterableWith(
-                Node.<String, Object>leafNode("one", enrichedFieldOne),
-                Node.<String, Object>leafNode("two", enrichedFieldTwo),
-                Node.<String, Object>leafNode("three", enrichedFieldThree))));
+        Tree<String, EnrichedField> expected = tree(branchNode("$", iterableWith(
+                Node.leafNode("one", enrichedFieldOne),
+                Node.leafNode("two", enrichedFieldTwo),
+                Node.leafNode("three", enrichedFieldThree))));
 
         // When
-        Tree<String, Object> actual = fromClassToTreeByField().call(sourceClass);
+        Tree<String, EnrichedField> actual = fromClassToTreeByField().call(sourceClass);
 
         // Then
         assertThat(actual, is(expected));
