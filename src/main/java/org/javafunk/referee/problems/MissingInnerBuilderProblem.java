@@ -1,7 +1,8 @@
-package org.javafunk.referee;
+package org.javafunk.referee.problems;
 
 import lombok.SneakyThrows;
 import lombok.Value;
+import org.javafunk.referee.Problem;
 
 import java.io.Writer;
 
