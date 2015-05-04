@@ -3,6 +3,7 @@ package org.javafunk.referee.tree;
 import lombok.Value;
 import org.javafunk.funk.datastructures.tuples.Pair;
 import org.javafunk.funk.functors.functions.UnaryFunction;
+import org.javafunk.funk.monads.Option;
 
 @Value
 public class Tree<L, T> {
@@ -38,5 +39,9 @@ public class Tree<L, T> {
 
     public <R> Tree<L, Pair<T, R>> zip(Tree<L, R> secondTree) {
         return new Tree<>(rootNode.zip(secondTree.getRootNode()));
+    }
+
+    public <R> Tree<L, Pair<Option<T>, Option<R>>> zip(ZipMode zipMode, Tree<L, R> secondTree) {
+        return new Tree<>(rootNode.zip(zipMode, secondTree.getRootNode()));
     }
 }

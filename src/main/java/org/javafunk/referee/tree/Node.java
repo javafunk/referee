@@ -11,9 +11,7 @@ import org.javafunk.funk.functors.functions.UnaryFunction;
 import org.javafunk.funk.functors.predicates.UnaryPredicate;
 import org.javafunk.funk.functors.procedures.UnaryProcedure;
 import org.javafunk.funk.monads.Option;
-import org.javafunk.referee.tree.traversalhandlers.MapLabelTraversalHandler;
-import org.javafunk.referee.tree.traversalhandlers.MapValueTraversalHandler;
-import org.javafunk.referee.tree.traversalhandlers.TwoZipTraversalHandler;
+import org.javafunk.referee.tree.traversalhandlers.*;
 import org.javafunk.referee.tree.visitors.FindByLabelVisitor;
 
 import java.util.LinkedList;
@@ -65,6 +63,7 @@ public class Node<L, T> {
 
     public <H extends TraversalHandler<L, T>> H traverseDepthFirstPreOrder(final H traversalHandler) {
         traversalHandler.handleSelf(this);
+        traversalHandler.handleChildren(children);
 
         Eagerly.each(Lazily.enumerate(children), new UnaryProcedure<Pair<Integer, Node<L, T>>>() {
             @Override public void execute(Pair<Integer, Node<L, T>> child) {
@@ -95,6 +94,7 @@ public class Node<L, T> {
         });
 
         traversalHandler.handleSelf(this);
+        traversalHandler.handleChildren(children);
 
         return traversalHandler;
     }
@@ -105,6 +105,7 @@ public class Node<L, T> {
         while (!nodeQueue.isEmpty()) {
             Node<L, T> node = nodeQueue.remove();
             traversalHandler.handleSelf(node);
+            traversalHandler.handleChildren(children);
 
             Eagerly.each(Lazily.enumerate(node.getChildren()), new Action<Pair<Integer, Node<L, T>>>() {
                 @Override public void on(Pair<Integer, Node<L, T>> child) {
@@ -128,6 +129,7 @@ public class Node<L, T> {
         while (!nodeQueue.isEmpty()) {
             Node<L, T> node = nodeQueue.remove();
             traversalHandler.handleSelf(node);
+            traversalHandler.handleChildren(children);
 
             Eagerly.each(Eagerly.reverse(Lazily.enumerate(node.getChildren())), new Action<Pair<Integer, Node<L, T>>>() {
                 @Override public void on(Pair<Integer, Node<L, T>> child) {
@@ -169,8 +171,20 @@ public class Node<L, T> {
         return traverseBreadthFirstRightToLeft(usingVisitor(visitor)).getVisitor();
     }
 
-    public <R> Node<L, Pair<T, R>> zip(Node<L, R> other) {
-        return traverseBreadthFirstLeftToRight(TwoZipTraversalHandler.<L, T, R>usingZipWith(other)).getZipped();
+    public <R> Node<L, Pair<T, R>> zip(Node<L, R> otherNode) {
+        return traverseBreadthFirstLeftToRight(TwoZipTraversalHandler.<L, T, R>usingZipWith(otherNode)).getZipped();
+    }
+
+    public <R> Node<L, Pair<Option<T>, Option<R>>> zip(ZipMode zipMode, Node<L, R> otherNode) {
+        return zipMode.zip(this, otherNode);
+    }
+
+    public <R> Node<L, Pair<Option<T>, Option<R>>> zipStrict(Node<L, R> otherNode) {
+        return traverseBreadthFirstLeftToRight(StrictTwoZipTraversalHandler.<L, T, R>usingStrictZipWith(otherNode)).getZipped();
+    }
+
+    public <R> Node<L, Pair<Option<T>, Option<R>>> zipLoose(Node<L, R> otherNode) {
+        return traverseBreadthFirstLeftToRight(LooseTwoZipTraversalHandler.<L, T, R>usingLooseZipWith(otherNode)).getZipped();
     }
 
     public <R> Node<L, R> mapValues(UnaryFunction<T, R> valueMapper) {
@@ -196,6 +210,26 @@ public class Node<L, T> {
             return new UnaryPredicate<Node<L, T>>() {
                 @Override public boolean evaluate(Node<L, T> node) {
                     return node.hasLabel(label);
+                }
+            };
+        }
+    }
+
+    public static class Mappers {
+        private Mappers() {}
+
+        public static <L> UnaryFunction<Node<L, ?>, L> toLabel() {
+            return new UnaryFunction<Node<L, ?>, L>() {
+                @Override public L call(Node<L, ?> node) {
+                    return node.getLabel();
+                }
+            };
+        }
+
+        public static <L, T, R> UnaryFunction<Node<L, T>, Node<L, R>> mappingValuesWith(final UnaryFunction<T, R> mapper) {
+            return new UnaryFunction<Node<L, T>, Node<L, R>>() {
+                @Override public Node<L, R> call(Node<L, T> node) {
+                    return node.mapValues(mapper);
                 }
             };
         }
