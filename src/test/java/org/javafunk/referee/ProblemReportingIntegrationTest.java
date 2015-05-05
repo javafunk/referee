@@ -1,7 +1,7 @@
 package org.javafunk.referee;
 
 import org.javafunk.referee.testclasses.ThingWithString;
-import org.javafunk.referee.testclasses.ThingWithStrings;
+import org.javafunk.referee.testclasses.ThingWithThingsWithStrings;
 import org.testng.annotations.Test;
 
 import java.util.Map;
@@ -13,7 +13,7 @@ import static org.javafunk.referee.Problems.missingFieldProblem;
 
 public class ProblemReportingIntegrationTest {
     @Test
-    public void reportsWhenFieldInInputIsNotInOutput() {
+    public void reportsWhenFieldInInputIsNotInOutputType() {
         // Given
         Map<Object, Object> thing = parse(
                 "iterable:\n" +
@@ -29,7 +29,7 @@ public class ProblemReportingIntegrationTest {
     }
 
     @Test
-    public void reportsWhenMultipleFieldsInInputAreNotInOutput() {
+    public void reportsWhenMultipleFieldsInInputAreNotInOutputType() {
         // Given
         Map<Object, Object> thing = parse(
                 "one: 1\n" +
@@ -44,5 +44,21 @@ public class ProblemReportingIntegrationTest {
                 hasOnlyItemsInAnyOrder(
                         missingFieldProblem("$.one", ThingWithString.class),
                         missingFieldProblem("$.two", ThingWithString.class)));
+    }
+
+    @Test
+    public void reportsWhenNestedFieldInInputIsNotInNestedOutputType() {
+        // Given
+        Map<Object, Object> thing = parse(
+                "first:\n" +
+                "  one: 1\n" +
+                "  string: hi\n");
+
+        // When
+        ProblemFinder problemFinder = new ProblemFinder(thing, ThingWithThingsWithStrings.class);
+
+        // Then
+        assertThat(problemFinder.getReport().getProblems(),
+                hasOnlyItemsInAnyOrder(missingFieldProblem("$.first.one", ThingWithString.class)));
     }
 }

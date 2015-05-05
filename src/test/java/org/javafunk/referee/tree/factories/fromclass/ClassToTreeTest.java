@@ -2,6 +2,7 @@ package org.javafunk.referee.tree.factories.fromclass;
 
 import org.javafunk.referee.support.EnrichedClass;
 import org.javafunk.referee.support.EnrichedField;
+import org.javafunk.referee.testclasses.ThingWithString;
 import org.javafunk.referee.testclasses.ThingWithStrings;
 import org.javafunk.referee.testclasses.ThingWithThingsWithStrings;
 import org.javafunk.referee.tree.Node;
@@ -43,9 +44,28 @@ public class ClassToTreeTest {
         assertThat(actual, is(expected));
     }
 
-    @Test(enabled = false)
+    @Test
     public void constructsTreeOfDepthTwoFromComplexClass() {
         // Given
         Class<?> sourceClass = ThingWithThingsWithStrings.class;
+
+        EnrichedClass<ThingWithThingsWithStrings> enrichedSourceClass = new EnrichedClass<>(ThingWithThingsWithStrings.class);
+        EnrichedClass<ThingWithString> enrichedNestedClass = new EnrichedClass<>(ThingWithString.class);
+
+        ElementMetadata metadataForClass = ElementMetadata.forClass(enrichedSourceClass);
+        ElementMetadata metadataForFirstField = ElementMetadata.forField(enrichedNestedClass, enrichedSourceClass.findFieldWithName("first").get());
+        ElementMetadata metadataForSecondField = ElementMetadata.forField(enrichedNestedClass, enrichedSourceClass.findFieldWithName("second").get());
+        ElementMetadata metadataForFirstStringField = ElementMetadata.forField(new EnrichedClass<>(String.class), enrichedNestedClass.findFieldWithName("string").get());
+        ElementMetadata metadataForSecondStringField = ElementMetadata.forField(new EnrichedClass<>(String.class), enrichedNestedClass.findFieldWithName("string").get());
+
+        Tree<String, ElementMetadata> expected = tree(node("$", metadataForClass, iterableWith(
+                node("first", metadataForFirstField, iterableWith(leafNode("string", metadataForFirstStringField))),
+                node("second", metadataForSecondField, iterableWith(leafNode("string", metadataForSecondStringField))))));
+
+        // When
+        Tree<String, ElementMetadata> actual = fromClassToTree().call(sourceClass);
+
+        // Then
+        assertThat(actual, is(expected));
     }
 }
