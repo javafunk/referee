@@ -80,7 +80,7 @@ public class LooseTwoZipTraversalHandler<L, T, R>
                 .build();
     }
 
-    @Override public boolean goDeeper() {
+    @Override public boolean goDeeper(Node<L, T> self) {
         return false;
     }
 

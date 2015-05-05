@@ -17,7 +17,7 @@ public class NoOpTraversalHandler<L, T>
         // no-op
     }
 
-    @Override public boolean goDeeper() {
+    @Override public boolean goDeeper(Node<L, T> node) {
         return true;
     }
 }

@@ -38,7 +38,7 @@ public class StrictTwoZipTraversalHandler<L, T, R>
         }
     }
 
-    @Override public boolean goDeeper() {
+    @Override public boolean goDeeper(Node<L, T> self) {
         return false;
     }
 

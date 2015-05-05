@@ -53,6 +53,10 @@ public class Node<L, T> {
         return this.label.equals(label);
     }
 
+    public boolean hasChildren() {
+        return children.iterator().hasNext();
+    }
+
     public <H extends TraversalHandler<L, T>> H traverse(H traversalHandler) {
         return DepthFirstPreOrder.traverse(this, traversalHandler);
     }
@@ -71,7 +75,7 @@ public class Node<L, T> {
                 final Node<L, T> node = child.getSecond();
 
                 traversalHandler.handleChild(index, node);
-                if (traversalHandler.goDeeper()) {
+                if (traversalHandler.goDeeper(node)) {
                     node.traverseDepthFirstPreOrder(traversalHandler);
                 }
             }
@@ -86,7 +90,7 @@ public class Node<L, T> {
                 final Integer index = child.getFirst();
                 final Node<L, T> node = child.getSecond();
 
-                if (traversalHandler.goDeeper()) {
+                if (traversalHandler.goDeeper(node)) {
                     node.traverseDepthFirstPostOrder(traversalHandler);
                 }
                 traversalHandler.handleChild(index, node);
@@ -113,7 +117,7 @@ public class Node<L, T> {
                     final Node<L, T> node = child.getSecond();
 
                     traversalHandler.handleChild(index, node);
-                    if (traversalHandler.goDeeper()) {
+                    if (traversalHandler.goDeeper(node)) {
                         nodeQueue.add(node);
                     }
                 }
@@ -137,7 +141,7 @@ public class Node<L, T> {
                     final Node<L, T> node = child.getSecond();
 
                     traversalHandler.handleChild(index, node);
-                    if (traversalHandler.goDeeper()) {
+                    if (traversalHandler.goDeeper(node)) {
                         nodeQueue.add(node);
                     }
                 }

@@ -14,6 +14,10 @@ public class ProblemReport {
         return ProblemReport.empty().with(problem);
     }
 
+    public static ProblemReport of(Iterable<Problem> problems) {
+        return new ProblemReport(problems);
+    }
+
     public static ProblemReport empty() {
         return new ProblemReport(iterableOf(Problem.class));
     }

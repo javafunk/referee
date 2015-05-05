@@ -36,7 +36,7 @@ public class MapValueTraversalHandler<L, T, R>
                 .build();
     }
 
-    @Override public boolean goDeeper() {
+    @Override public boolean goDeeper(Node<L, T> node) {
         return false;
     }
 
