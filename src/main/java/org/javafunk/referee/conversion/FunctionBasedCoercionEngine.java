@@ -7,20 +7,15 @@ import org.javafunk.funk.functors.functions.UnaryFunction;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
+import static org.javafunk.funk.BigDecimals.*;
+import static org.javafunk.funk.BigIntegers.fromIntegerToBigInteger;
+import static org.javafunk.funk.BigIntegers.fromStringToBigInteger;
 import static org.javafunk.funk.Literals.mapBuilderFromEntries;
+import static org.javafunk.funk.Longs.fromIntegerToLong;
+import static org.javafunk.funk.UnaryFunctions.identity;
 import static org.javafunk.referee.conversion.CoercionKey.coercionKey;
-import static org.javafunk.referee.support.BigDecimals.doubleToBigDecimal;
-import static org.javafunk.referee.support.BigDecimals.integerToBigDecimal;
-import static org.javafunk.referee.support.BigDecimals.stringToBigDecimal;
-import static org.javafunk.referee.support.BigIntegers.integerToBigInteger;
-import static org.javafunk.referee.support.BigIntegers.stringToBigInteger;
-import static org.javafunk.referee.support.Longs.integerToLong;
-import static org.javafunk.referee.support.UnaryFunctions.identity;
 
 @ToString
 @EqualsAndHashCode
@@ -60,12 +55,12 @@ public class FunctionBasedCoercionEngine implements CoercionEngine {
 
     public static Map<CoercionKey, UnaryFunction<?, ?>> defaultCoercions() {
         return Literals.<CoercionKey, UnaryFunction<? extends Object, ? extends Object>>mapBuilder()
-                .withKeyValuePair(coercionKey(String.class, BigDecimal.class), stringToBigDecimal())
-                .withKeyValuePair(coercionKey(Double.class, BigDecimal.class), doubleToBigDecimal())
-                .withKeyValuePair(coercionKey(Integer.class, BigDecimal.class), integerToBigDecimal())
-                .withKeyValuePair(coercionKey(String.class, BigInteger.class), stringToBigInteger())
-                .withKeyValuePair(coercionKey(Integer.class, BigInteger.class), integerToBigInteger())
-                .withKeyValuePair(coercionKey(Integer.class, Long.class), integerToLong())
+                .withKeyValuePair(coercionKey(String.class, BigDecimal.class), fromStringToBigDecimal())
+                .withKeyValuePair(coercionKey(Double.class, BigDecimal.class), fromDoubleToBigDecimal())
+                .withKeyValuePair(coercionKey(Integer.class, BigDecimal.class), fromIntegerToBigDecimal())
+                .withKeyValuePair(coercionKey(String.class, BigInteger.class), fromStringToBigInteger())
+                .withKeyValuePair(coercionKey(Integer.class, BigInteger.class), fromIntegerToBigInteger())
+                .withKeyValuePair(coercionKey(Integer.class, Long.class), fromIntegerToLong())
                 .withKeyValuePair(coercionKey(String.class, String.class), identity())
                 .withKeyValuePair(coercionKey(Integer.class, Integer.class), identity())
                 .withKeyValuePair(coercionKey(Boolean.class, Boolean.class), identity())

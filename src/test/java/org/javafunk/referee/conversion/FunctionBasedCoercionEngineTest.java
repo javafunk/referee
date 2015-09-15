@@ -2,7 +2,6 @@ package org.javafunk.referee.conversion;
 
 import org.javafunk.funk.Literals;
 import org.javafunk.funk.functors.functions.UnaryFunction;
-import org.javafunk.referee.support.Integers;
 import org.testng.annotations.Test;
 
 import java.math.BigInteger;
@@ -10,6 +9,7 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.javafunk.funk.Longs.fromIntegerToLong;
 import static org.javafunk.referee.conversion.CoercionKey.coercionKey;
 
 public class FunctionBasedCoercionEngineTest {
@@ -70,7 +70,7 @@ public class FunctionBasedCoercionEngineTest {
         Integer input = 126;
         FunctionBasedCoercionEngine coercionEngine = FunctionBasedCoercionEngine
                 .withNoCoercions()
-                .registerCoercion(Integer.class, Long.class, Integers.integerToLong());
+                .registerCoercion(Integer.class, Long.class, fromIntegerToLong());
 
         // When
         Long output = coercionEngine.convertTo(input, Long.class);
