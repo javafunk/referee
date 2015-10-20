@@ -13,8 +13,8 @@ public class EnrichedField {
         return underlyingField.getName();
     }
 
-    public Class<?> getType() {
-        return underlyingField.getType();
+    public EnrichedClass<?> getType() {
+        return new EnrichedClass<>(underlyingField.getType());
     }
 
     public <A> A setOn(A instance, Object value) {

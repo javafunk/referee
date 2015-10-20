@@ -2,6 +2,7 @@ package org.javafunk.referee.conversion;
 
 import org.javafunk.funk.Literals;
 import org.javafunk.funk.functors.functions.UnaryFunction;
+import org.javafunk.referee.support.EnrichedClass;
 import org.javafunk.referee.support.Integers;
 import org.testng.annotations.Test;
 
@@ -73,7 +74,7 @@ public class FunctionBasedCoercionEngineTest {
                 .registerCoercion(Integer.class, Long.class, Integers.integerToLong());
 
         // When
-        Long output = coercionEngine.convertTo(input, Long.class);
+        Long output = coercionEngine.convertTo(input, new EnrichedClass<>(Long.class));
 
         // Then
         assertThat(output, is(126L));

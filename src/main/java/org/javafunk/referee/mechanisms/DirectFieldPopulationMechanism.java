@@ -28,7 +28,7 @@ public class DirectFieldPopulationMechanism<A> implements PopulationMechanism<A>
 
     @Override public PopulationMechanism<A> apply(String attributeName, Object attributeValue) {
         EnrichedField field = targetClass.findFieldWithName(attributeName).getOrThrow(new RuntimeException());
-        Class<?> attributeTargetType = field.getType();
+        EnrichedClass<?> attributeTargetType = field.getType();
         Object coercedAttributeValue = attributeValueFrom(attributeValue, attributeTargetType);
         A updatedInstance = field.setOn(targetInstance, coercedAttributeValue);
 
@@ -43,7 +43,7 @@ public class DirectFieldPopulationMechanism<A> implements PopulationMechanism<A>
         return targetInstance;
     }
 
-    private Object attributeValueFrom(Object value, Class<?> targetClass) {
+    private Object attributeValueFrom(Object value, EnrichedClass<?> targetClass) {
         return coercionEngine.convertTo(value, targetClass);
     }
 }

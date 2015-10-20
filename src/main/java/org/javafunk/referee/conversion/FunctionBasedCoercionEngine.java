@@ -4,12 +4,10 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.javafunk.funk.Literals;
 import org.javafunk.funk.functors.functions.UnaryFunction;
+import org.javafunk.referee.support.EnrichedClass;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import static org.javafunk.funk.Literals.mapBuilderFromEntries;
@@ -43,10 +41,10 @@ public class FunctionBasedCoercionEngine implements CoercionEngine {
     }
 
     @SuppressWarnings("unchecked")
-    @Override public <T> T convertTo(Object instance, Class<T> targetType) {
+    @Override public <T> T convertTo(Object instance, EnrichedClass<T> targetType) {
         UnaryFunction<Object, Object> function =
-                (UnaryFunction<Object, Object>) coercions.get(coercionKey(instance.getClass(), targetType));
-        return targetType.cast(function.call(instance));
+                (UnaryFunction<Object, Object>) coercions.get(coercionKey(instance.getClass(), targetType.getUnderlyingClass()));
+        return targetType.getUnderlyingClass().cast(function.call(instance));
     }
 
     public FunctionBasedCoercionEngine registerCoercion(

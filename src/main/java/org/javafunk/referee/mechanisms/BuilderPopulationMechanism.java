@@ -89,7 +89,7 @@ public class BuilderPopulationMechanism<B> implements PopulationMechanism<B> {
 
 
     private Object coerceTo(Object attributeValue, EnrichedClass<?> attributeType) {
-        return coercionEngine.convertTo(attributeValue, attributeType.getUnderlyingClass());
+        return coercionEngine.convertTo(attributeValue, attributeType);
     }
 
     private UnaryFunction<Object, Object> coercingTo(final EnrichedClass<?> attributeType) {

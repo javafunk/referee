@@ -26,7 +26,7 @@ public class EnrichedFieldToNodeByField
 
     @Override public Node<String, ElementMetadata> call(EnrichedField field) {
         String fieldLabel = field.getName();
-        EnrichedClass<?> fieldClass = new EnrichedClass<>(field.getType());
+        EnrichedClass<?> fieldClass = field.getType();
         ElementMetadata fieldMetadata = ElementMetadata.forField(fieldClass, field);
 
         if (leafClasses.contains(fieldClass)) {

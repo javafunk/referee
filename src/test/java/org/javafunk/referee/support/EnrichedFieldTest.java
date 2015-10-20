@@ -14,16 +14,16 @@ public class EnrichedFieldTest {
     }
 
     @Test
-    public void returnsTheTypeOfTheField() throws Exception {
+    public void returnsTheEnrichedTypeOfTheField() throws Exception {
         // Given
         Field underlyingField = ThingWithStringField.class.getDeclaredField("field");
         EnrichedField enrichedField = new EnrichedField(underlyingField);
 
         // When
-        Class<?> fieldType = enrichedField.getType();
+        EnrichedClass<?> fieldType = enrichedField.getType();
 
         // Then
-        assertThat(fieldType.equals(String.class), is(true));
+        assertThat(fieldType.equals(new EnrichedClass<>(String.class)), is(true));
     }
 
     @Test
