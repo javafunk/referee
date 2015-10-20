@@ -26,7 +26,7 @@ import static org.javafunk.referee.tree.ZipMode.Strict;
 
 public class TreeTest {
     @Test
-    public void visitsAllNodesUsingDepthFirstPreOrder() {
+    public void visitsAllNodesUsingDepthFirstPreOrderTraversal() {
         // Given
         Node<String, Integer> firstGreatGrandchild = leafNode("first-greatgrandchild", 1111);
         Node<String, Integer> secondGreatGrandchild = leafNode("second-greatgrandchild", 1131);
