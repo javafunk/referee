@@ -10,6 +10,7 @@ import org.javafunk.funk.functors.functions.UnaryFunction;
 import org.javafunk.funk.functors.predicates.UnaryPredicate;
 import org.javafunk.referee.ProblemReport;
 import org.javafunk.referee.Problems;
+import org.javafunk.referee.attributename.AttributeNameResolver;
 
 import java.util.Map;
 
@@ -21,10 +22,13 @@ import static org.javafunk.funk.Literals.mapOf;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FirstApplicablePopulationMechanismFactory implements PopulationMechanismFactory {
+    AttributeNameResolver attributeNameResolver;
     Iterable<PopulationMechanismFactory> factories;
 
-    public FirstApplicablePopulationMechanismFactory(PopulationMechanismFactory... factories) {
-        this(iterableFrom(factories));
+    public FirstApplicablePopulationMechanismFactory(
+            AttributeNameResolver attributeNameResolver,
+            PopulationMechanismFactory... factories) {
+        this(attributeNameResolver, iterableFrom(factories));
     }
 
     @Override public <C> ProblemReport validateFor(
@@ -41,7 +45,7 @@ public class FirstApplicablePopulationMechanismFactory implements PopulationMech
         PopulationMechanism<C> populationMechanism = mechanismFor(targetType);
 
         for (Map.Entry<Object, Object> attribute : definition.entrySet()) {
-            String attributeName = attributeNameFrom(attribute.getKey());
+            String attributeName = attributeNameResolver.resolve(attribute.getKey());
             Object attributeValue = attribute.getValue();
 
             populationMechanism = populationMechanism.apply(attributeName, attributeValue);
@@ -53,15 +57,6 @@ public class FirstApplicablePopulationMechanismFactory implements PopulationMech
         return Eagerly.firstMatching(factories, thatCanPopulate(targetType))
                 .map(toInstanceFor(targetType))
                 .getOrThrow(new RuntimeException());
-    }
-
-    private String attributeNameFrom(Object attributeNameObject) {
-        String attributeNameString = attributeNameObject.toString();
-        String joined = attributeNameString.replace(" ", "");
-        String firstLetter = attributeNameString.substring(0, 1);
-        String attributeName = firstLetter.toLowerCase() + joined.substring(1);
-
-        return attributeName;
     }
 
     private static <C> UnaryFunction<PopulationMechanismFactory, PopulationMechanism<C>> toInstanceFor(

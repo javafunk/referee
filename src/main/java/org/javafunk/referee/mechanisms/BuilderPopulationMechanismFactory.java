@@ -6,8 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.javafunk.funk.monads.Option;
-import org.javafunk.referee.Problem;
 import org.javafunk.referee.ProblemReport;
+import org.javafunk.referee.attributename.AttributeNameResolver;
 import org.javafunk.referee.conversion.CoercionEngine;
 import org.javafunk.referee.support.EnrichedClass;
 
@@ -23,6 +23,7 @@ import static org.javafunk.referee.Problems.missingWitherProblem;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BuilderPopulationMechanismFactory implements PopulationMechanismFactory {
     CoercionEngine coercionEngine;
+    AttributeNameResolver attributeNameResolver;
 
     @Override public <C> ProblemReport validateFor(
             Class<C> targetType,
@@ -38,7 +39,7 @@ public class BuilderPopulationMechanismFactory implements PopulationMechanismFac
             BuilderConvention convention = new InnerBuilderConvention(targetType);
 
             for (Map.Entry<Object, Object> attribute : definition.entrySet()) {
-                String attributeName = attributeNameFrom(attribute.getKey());
+                String attributeName = attributeNameResolver.resolve(attribute.getKey());
                 if (convention.witherFor(attributeName).hasNoValue()) {
                     updatedProblemReport = updatedProblemReport
                             .with(missingWitherProblem(
@@ -57,7 +58,7 @@ public class BuilderPopulationMechanismFactory implements PopulationMechanismFac
         PopulationMechanism<C> populationMechanism = mechanismFor(targetType);
 
         for (Map.Entry<Object, Object> attribute : definition.entrySet()) {
-            String attributeName = attributeNameFrom(attribute.getKey());
+            String attributeName = attributeNameResolver.resolve(attribute.getKey());
             Object attributeValue = attribute.getValue();
 
             populationMechanism = populationMechanism.apply(attributeName, attributeValue, this);
@@ -67,14 +68,5 @@ public class BuilderPopulationMechanismFactory implements PopulationMechanismFac
 
     @Override public <D> PopulationMechanism<D> mechanismFor(Class<D> targetType) {
         return new BuilderPopulationMechanism<>(targetType, coercionEngine);
-    }
-
-    private String attributeNameFrom(Object attributeNameObject) {
-        String attributeNameString = attributeNameObject.toString();
-        String joined = attributeNameString.replace(" ", "");
-        String firstLetter = attributeNameString.substring(0, 1);
-        String attributeName = firstLetter.toLowerCase() + joined.substring(1);
-
-        return attributeName;
     }
 }

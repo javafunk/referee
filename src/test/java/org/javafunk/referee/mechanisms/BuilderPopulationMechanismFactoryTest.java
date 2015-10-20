@@ -11,6 +11,7 @@ import org.javafunk.funk.Predicates;
 import org.javafunk.funk.functors.Mapper;
 import org.javafunk.referee.Problem;
 import org.javafunk.referee.ProblemReport;
+import org.javafunk.referee.attributename.TextualAttributeNameResolver;
 import org.javafunk.referee.conversion.FunctionBasedCoercionEngine;
 import org.javafunk.referee.testclasses.ThingWithBuilder;
 import org.javafunk.referee.testclasses.ThingWithBuilderAndMissingWither;
@@ -35,7 +36,8 @@ public class BuilderPopulationMechanismFactoryTest {
         Map<Object, Object> definition = mapOf(Object.class, Object.class);
 
         BuilderPopulationMechanismFactory mechanismFactory = new BuilderPopulationMechanismFactory(
-                FunctionBasedCoercionEngine.withDefaultCoercions());
+                FunctionBasedCoercionEngine.withDefaultCoercions(),
+                new TextualAttributeNameResolver());
 
         // When
         ProblemReport report = mechanismFactory.validateFor(targetType, definition, ProblemReport.empty());
@@ -51,7 +53,8 @@ public class BuilderPopulationMechanismFactoryTest {
         Map<Object, Object> definition = mapOf(Object.class, Object.class);
 
         BuilderPopulationMechanismFactory mechanismFactory = new BuilderPopulationMechanismFactory(
-                FunctionBasedCoercionEngine.withDefaultCoercions());
+                FunctionBasedCoercionEngine.withDefaultCoercions(),
+                new TextualAttributeNameResolver());
 
         // When
         ProblemReport report = mechanismFactory.validateFor(targetType, definition, ProblemReport.empty());
@@ -67,7 +70,8 @@ public class BuilderPopulationMechanismFactoryTest {
         Map<Object, Object> definition = Literals.<Object, Object>mapWithKeyValuePair("No Wither", "Value");
 
         BuilderPopulationMechanismFactory mechanismFactory = new BuilderPopulationMechanismFactory(
-                FunctionBasedCoercionEngine.withDefaultCoercions());
+                FunctionBasedCoercionEngine.withDefaultCoercions(),
+                new TextualAttributeNameResolver());
 
         // When
         ProblemReport report = mechanismFactory.validateFor(targetType, definition, ProblemReport.empty());
@@ -86,7 +90,8 @@ public class BuilderPopulationMechanismFactoryTest {
                 "Present Wither", "Value 3");
 
         BuilderPopulationMechanismFactory mechanismFactory = new BuilderPopulationMechanismFactory(
-                FunctionBasedCoercionEngine.withDefaultCoercions());
+                FunctionBasedCoercionEngine.withDefaultCoercions(),
+                new TextualAttributeNameResolver());
 
         // When
         ProblemReport report = mechanismFactory.validateFor(targetType, definition, ProblemReport.empty());

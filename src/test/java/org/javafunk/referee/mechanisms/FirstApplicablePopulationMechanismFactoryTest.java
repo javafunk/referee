@@ -2,6 +2,7 @@ package org.javafunk.referee.mechanisms;
 
 import org.javafunk.referee.ProblemReport;
 import org.javafunk.referee.Problems;
+import org.javafunk.referee.attributename.TextualAttributeNameResolver;
 import org.javafunk.referee.testclasses.ThingWithBuilderAndStrings;
 import org.testng.annotations.Test;
 
@@ -37,7 +38,9 @@ public class FirstApplicablePopulationMechanismFactoryTest {
         given(second.mechanismFor(targetType)).willReturn(expected);
 
         PopulationMechanismFactory factory =
-                new FirstApplicablePopulationMechanismFactory(iterableWith(first, second, third));
+                new FirstApplicablePopulationMechanismFactory(
+                        new TextualAttributeNameResolver(),
+                        iterableWith(first, second, third));
 
         // When
         PopulationMechanism<ThingWithBuilderAndStrings> actual = factory.mechanismFor(ThingWithBuilderAndStrings.class);
